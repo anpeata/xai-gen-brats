@@ -23,7 +23,7 @@ This project addresses a practical clinical-AI gap: achieving strong segmentatio
 - ECE (probability calibration)
 
 ## Research Value
-- Directly aligned with medical image analysis and oncology-focused PhD tracks.
+- Directly aligned with medical image analysis and oncology-focused research tracks.
 - Demonstrates practical understanding of explainability and uncertainty in high-stakes AI.
 - Includes generative modeling extension for scarce/imbalanced tumor subtypes.
 

@@ -12,7 +12,7 @@ endobj
 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
 endobj
 5 0 obj
-<< /Length 1020 >>
+<< /Length 980 >>
 stream
 BT
 /F1 12 Tf
@@ -33,13 +33,13 @@ BT
 0 -16 Td
 (5. Generative extension with a lightweight VAE for synthetic MRI slices) Tj
 0 -22 Td
-(Research relevance for PhD applications:) Tj
+(Research highlights:) Tj
 0 -16 Td
 (- Oncology-focused imaging pipeline on a standard benchmark dataset.) Tj
 0 -16 Td
 (- Transparent and uncertainty-aware AI design for clinical trust.) Tj
 0 -16 Td
-(- Demonstrated integration of segmentation, interpretability, and generation.) Tj
+(- Integration of segmentation, interpretability, and generation.) Tj
 0 -22 Td
 (Future work:) Tj
 0 -16 Td
@@ -62,5 +62,5 @@ xref
 trailer
 << /Size 6 /Root 1 0 R >>
 startxref
-1383
+1343
 %%EOF

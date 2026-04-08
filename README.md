@@ -1,6 +1,6 @@
 # XAI-BraTS: Explainable & Generative AI for Brain Tumor MRI Analysis
 
-Research-grade project for brain tumor MRI segmentation and synthesis, designed for PhD application portfolios in medical imaging, oncology AI, explainability, and generative modeling.
+Research-grade project for brain tumor MRI segmentation and synthesis in medical imaging, oncology AI, explainability, and generative modeling.
 
 ## Why This Project Matters
 
@@ -10,13 +10,6 @@ This repository focuses on a high-impact clinical AI task: multi-modal brain tum
 - Transparent decision support through explainability.
 - Uncertainty-aware outputs for safer interpretation.
 - Generative modeling to address rare tumor patterns and data scarcity.
-
-The project is designed to demonstrate practical research potential for supervisors in:
-
-- Medical image analysis.
-- Oncology-focused AI.
-- Explainable AI and trustworthy ML.
-- Generative modeling for healthcare.
 
 ## Key Features
 
@@ -135,7 +128,7 @@ python scripts/generate_samples.py --checkpoint checkpoints/vae.pt --n 8
 - Grad-CAM example: `assets/gradcam_overlay.svg`
 - Uncertainty map example: `assets/uncertainty_map.svg`
 
-## Research Comparison Angle (PhD-Level Discussion)
+## Research Comparison Angle
 
 In your reports or interviews, compare:
 
@@ -155,7 +148,7 @@ Focus questions:
 - Week 2: Explainability and uncertainty analysis.
 - Week 3: Generative extension + final reporting.
 
-## PhD Application Talking Points
+## Research Strengths
 
 This project demonstrates:
 
