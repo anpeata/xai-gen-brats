@@ -22,6 +22,17 @@ This project addresses a practical clinical-AI gap: achieving strong segmentatio
 - HD95 (boundary accuracy)
 - ECE (probability calibration)
 
+## Current Status
+- Repository and pipeline scaffolding are complete.
+- Final claims should be updated only after full experiments are executed and logged.
+- Use the templates in `docs/experiment_log_template.md` and `docs/insights_report_template.md` for evidence-backed reporting.
+
+## Required Evidence Before Finalizing Results
+1. Baseline metrics from `scripts/evaluate.py` saved to `results/metrics/`.
+2. Qualitative figures from XAI and uncertainty scripts saved to `results/figures/`.
+3. Ablation summary table comparing baseline vs augmentation settings.
+4. Consolidated insights report based on quantitative and qualitative findings.
+
 ## Research Value
 - Directly aligned with medical image analysis and oncology-focused research tracks.
 - Demonstrates practical understanding of explainability and uncertainty in high-stakes AI.

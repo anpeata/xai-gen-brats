@@ -80,6 +80,15 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
+## Runbook and Reporting Workflow
+
+For end-to-end execution and documentation workflow, use:
+
+- `docs/runbook.md`
+- `docs/experiment_log_template.md`
+- `docs/insights_report_template.md`
+- `results/README.md`
+
 ## Phase 1: Baseline Segmentation (Core)
 
 Train baseline model:
@@ -128,6 +137,41 @@ python scripts/generate_samples.py --checkpoint checkpoints/vae.pt --n 8
 - Grad-CAM example: `assets/gradcam_overlay.svg`
 - Uncertainty map example: `assets/uncertainty_map.svg`
 
+## Results (Fill With Real Runs)
+
+Add final values from generated files under `results/metrics/`.
+
+| Experiment Setting | Dice Mean | Dice ET | Dice TC | Dice WT | HD95 Mean | ECE | Notes |
+|---|---:|---:|---:|---:|---:|---:|---|
+| Baseline UNet |  |  |  |  |  |  |  |
+| Baseline + Uncertainty Analysis |  |  |  |  |  |  |  |
+| Baseline + Synthetic Augmentation |  |  |  |  |  |  |  |
+
+### Qualitative Evidence Checklist
+
+- [ ] Segmentation overlay for at least 3 representative cases.
+- [ ] Grad-CAM figure for at least 3 representative cases.
+- [ ] Uncertainty map for at least 3 representative cases.
+- [ ] Synthetic sample panel generated from VAE.
+
+### Key Insights (Replace With Your Findings)
+
+1. Which tumor sub-region achieves highest and lowest Dice, and why.
+2. Whether Grad-CAM aligns with lesion regions or reveals spurious focus.
+3. Whether uncertainty peaks correlate with boundary errors.
+4. Whether synthetic augmentation improves minority-region performance.
+
+## Reproducibility Checklist
+
+- [ ] Dataset source and version are documented.
+- [ ] Train/validation split details are documented.
+- [ ] Environment versions are logged.
+- [ ] Random seeds are fixed and recorded.
+- [ ] Commands for each run are logged.
+- [ ] Metrics are saved as machine-readable files.
+- [ ] Figures in README point to generated files in `results/`.
+- [ ] Commit hash used for final results is recorded.
+
 ## Research Comparison Angle
 
 In your reports or interviews, compare:
@@ -164,6 +208,11 @@ One-page summary is available in:
 
 - `docs/research_summary.md`
 - `docs/research_summary.pdf`
+
+Use these companion files for complete reporting:
+
+- `docs/experiment_log_template.md`
+- `docs/insights_report_template.md`
 
 ## Future Work
 
