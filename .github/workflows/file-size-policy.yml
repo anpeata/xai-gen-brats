@@ -1,0 +1,28 @@
+name: file-size-policy
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  enforce-max-file-size:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Block files larger than 5 MB
+        shell: bash
+        run: |
+          limit=$((5 * 1024 * 1024))
+          violations=$(git ls-tree -r -l HEAD | awk -v max="$limit" '$4 > max {printf "%s (%s bytes)\n", $5, $4}')
+
+          if [ -n "$violations" ]; then
+            echo "Repository policy violation: files larger than 5 MB detected:"
+            echo "$violations"
+            exit 1
+          fi
+
+          echo "File size policy check passed."

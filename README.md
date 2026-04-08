@@ -80,6 +80,23 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
+## Repository Policy: Maximum File Size
+
+This repository enforces a strict maximum file size policy:
+
+- No file larger than 5 MB is allowed in git history.
+
+Enforcement mechanisms:
+
+- Local pre-push hook at `.githooks/pre-push`.
+- GitHub Actions workflow at `.github/workflows/file-size-policy.yml`.
+
+Enable local hook policy after cloning:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/install_hooks.ps1
+```
+
 ## Runbook and Reporting Workflow
 
 For end-to-end execution and documentation workflow, use:
