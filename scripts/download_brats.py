@@ -2,10 +2,18 @@ from __future__ import annotations
 
 import argparse
 import shutil
+import tarfile
 import zipfile
 from pathlib import Path
 
 MODALITIES = ("t1", "t1ce", "t2", "flair")
+
+SYNAPSE_MODALITY_MAP = {
+    "t1": "t1n",
+    "t1ce": "t1c",
+    "t2": "t2w",
+    "flair": "t2f",
+}
 
 
 def parse_args() -> argparse.Namespace:
@@ -21,6 +29,12 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--extract-zips", action="store_true")
     p.add_argument("--link-mode", choices=["copy", "hardlink"], default="copy")
     p.add_argument("--limit", type=int, default=0, help="optional max number of cases to prepare")
+    p.add_argument(
+        "--include-case-prefix",
+        nargs="*",
+        default=[],
+        help="optional case prefixes to include, e.g. BraTS-GLI BraTS-MEN",
+    )
     p.add_argument("--dry-run", action="store_true")
     return p.parse_args()
 
@@ -71,10 +85,41 @@ def extract_zips(root: Path) -> None:
 
     for zip_path in zip_files:
         out_dir = zip_path.with_suffix("")
+        if out_dir.exists() and any(out_dir.iterdir()):
+            print(f"Skipping extraction (already populated): {out_dir}")
+            continue
         out_dir.mkdir(parents=True, exist_ok=True)
         print(f"Extracting {zip_path} -> {out_dir}")
         with zipfile.ZipFile(zip_path, "r") as zf:
             zf.extractall(out_dir)
+
+
+def extract_tars(root: Path) -> None:
+    tar_files = sorted(root.rglob("*.tar.gz"))
+    if not tar_files:
+        print("No tar.gz archives found.")
+        return
+
+    for tar_path in tar_files:
+        out_dir = tar_path.parent / tar_path.name.replace(".tar.gz", "")
+        if out_dir.exists() and any(out_dir.iterdir()):
+            print(f"Skipping extraction (already populated): {out_dir}")
+            continue
+        out_dir.mkdir(parents=True, exist_ok=True)
+        print(f"Extracting {tar_path} -> {out_dir}")
+        with tarfile.open(tar_path, "r:gz") as tf:
+            tf.extractall(out_dir)
+
+
+def filter_cases_by_prefix(
+    cases: list[tuple[str, dict[str, Path]]],
+    include_prefixes: list[str],
+) -> list[tuple[str, dict[str, Path]]]:
+    if not include_prefixes:
+        return cases
+
+    prefixes = tuple(include_prefixes)
+    return [(case_id, files) for case_id, files in cases if case_id.startswith(prefixes)]
 
 
 def discover_cases(search_root: Path) -> list[tuple[str, dict[str, Path]]]:
@@ -89,6 +134,32 @@ def discover_cases(search_root: Path) -> list[tuple[str, dict[str, Path]]]:
                 ok = False
                 break
             files[mod] = p
+        if ok:
+            cases.append((case_id, files))
+    return cases
+
+
+def discover_cases_synapse(search_root: Path) -> list[tuple[str, dict[str, Path]]]:
+    """Discover BraTS cases from Synapse naming:
+
+    - images: <case>-t1n/t1c/t2w/t2f.nii.gz under data/<case>/
+    - labels: <case>-seg.nii.gz under labels/
+    """
+    cases: list[tuple[str, dict[str, Path]]] = []
+    for seg_path in sorted(search_root.rglob("*-seg.nii.gz")):
+        case_id = seg_path.name.replace("-seg.nii.gz", "")
+        files: dict[str, Path] = {"seg": seg_path}
+
+        ok = True
+        for mod in MODALITIES:
+            syn_mod = SYNAPSE_MODALITY_MAP[mod]
+            pattern = f"{case_id}-{syn_mod}.nii.gz"
+            candidates = list(search_root.rglob(pattern))
+            if not candidates:
+                ok = False
+                break
+            files[mod] = candidates[0]
+
         if ok:
             cases.append((case_id, files))
     return cases
@@ -152,8 +223,13 @@ def main() -> None:
 
     if args.extract_zips:
         extract_zips(raw_dir)
+        extract_tars(raw_dir)
 
     cases = discover_cases(raw_dir)
+    if not cases:
+        cases = discover_cases_synapse(raw_dir)
+
+    cases = filter_cases_by_prefix(cases, args.include_case_prefix)
     if not cases:
         raise RuntimeError(
             "No valid BraTS cases found. Ensure files include *_t1, *_t1ce, *_t2, *_flair, *_seg as .nii.gz"

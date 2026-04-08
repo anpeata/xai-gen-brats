@@ -29,6 +29,17 @@ If you already downloaded data manually:
 - Put raw files under `data/raw/BraTS2023/` and run:
 	- `python scripts/download_brats.py --source none --extract-zips`
 
+Recommended for Synapse zip downloads in this repository layout:
+- Place archives under `data/raw/BraTS2023/archives/GLI`.
+- Prepare GLI cases for segmentation with:
+	- `python scripts/download_brats.py --source none --raw-dir data/raw/BraTS2023/archives --processed-dir data/processed/BraTS2023 --extract-zips --link-mode hardlink --include-case-prefix BraTS-GLI`
+
+Optional challenge-specific preparation commands:
+- MEN:
+	- `python scripts/download_brats.py --source none --raw-dir data/raw/BraTS2023/archives --processed-dir data/processed/BraTS2023-MEN --extract-zips --link-mode hardlink --include-case-prefix BraTS-MEN`
+- PED:
+	- `python scripts/download_brats.py --source none --raw-dir data/raw/BraTS2023/archives --processed-dir data/processed/BraTS2023-PED --extract-zips --link-mode hardlink --include-case-prefix BraTS-PED`
+
 Quick verification command:
 - `python scripts/download_brats.py --source none --dry-run`
 
