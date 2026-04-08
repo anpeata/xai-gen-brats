@@ -10,9 +10,27 @@ This runbook helps generate real evidence quickly and consistently.
 
 ## Step 2: Prepare data
 
-1. Download BraTS 2023.
-2. Place cases under `data/processed/BraTS2023/`.
-3. Verify each case has T1, T1ce, T2, FLAIR, and segmentation mask.
+1. Download BraTS 2023 using one of the supported options below.
+2. Use the dataset preparation script to normalize file layout.
+3. Verify each prepared case has T1, T1ce, T2, FLAIR, and segmentation mask.
+
+Option A: Kaggle API
+- Configure Kaggle credentials (`~/.kaggle/kaggle.json` or environment variables).
+- Download and prepare:
+	- `python scripts/download_brats.py --source kaggle --kaggle-dataset <owner/dataset-slug> --extract-zips`
+	- or `python scripts/download_brats.py --source kaggle --kaggle-competition <competition-slug> --extract-zips`
+
+Option B: Hugging Face Hub
+- Authenticate if required (`huggingface-cli login`).
+- Download and prepare:
+	- `python scripts/download_brats.py --source huggingface --hf-repo-id <dataset-repo-id> --extract-zips`
+
+If you already downloaded data manually:
+- Put raw files under `data/raw/BraTS2023/` and run:
+	- `python scripts/download_brats.py --source none --extract-zips`
+
+Quick verification command:
+- `python scripts/download_brats.py --source none --dry-run`
 
 ## Step 3: Baseline segmentation
 
