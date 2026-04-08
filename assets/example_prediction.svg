@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="320" viewBox="0 0 900 320">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="320" fill="url(#bg)"/>
+  <text x="24" y="34" fill="#e2e8f0" font-size="20" font-family="Segoe UI">Example Segmentation Output</text>
+  <rect x="30" y="60" width="250" height="230" fill="#111827" stroke="#334155"/>
+  <rect x="325" y="60" width="250" height="230" fill="#111827" stroke="#334155"/>
+  <rect x="620" y="60" width="250" height="230" fill="#111827" stroke="#334155"/>
+  <text x="110" y="88" fill="#93c5fd" font-size="14" font-family="Segoe UI">Input FLAIR</text>
+  <text x="390" y="88" fill="#fde68a" font-size="14" font-family="Segoe UI">Ground Truth</text>
+  <text x="693" y="88" fill="#86efac" font-size="14" font-family="Segoe UI">Prediction</text>
+  <ellipse cx="155" cy="185" rx="75" ry="65" fill="#374151"/>
+  <ellipse cx="455" cy="185" rx="80" ry="60" fill="#374151"/>
+  <ellipse cx="445" cy="175" rx="38" ry="28" fill="#eab308" opacity="0.75"/>
+  <ellipse cx="470" cy="205" rx="26" ry="20" fill="#f97316" opacity="0.7"/>
+  <ellipse cx="445" cy="165" rx="18" ry="14" fill="#ef4444" opacity="0.7"/>
+  <ellipse cx="750" cy="185" rx="80" ry="60" fill="#374151"/>
+  <ellipse cx="742" cy="177" rx="36" ry="27" fill="#eab308" opacity="0.72"/>
+  <ellipse cx="764" cy="202" rx="25" ry="19" fill="#f97316" opacity="0.68"/>
+  <ellipse cx="742" cy="167" rx="17" ry="13" fill="#ef4444" opacity="0.66"/>
+  <text x="36" y="309" fill="#94a3b8" font-size="12" font-family="Segoe UI">Labels: yellow=edema, orange=tumor core, red=enhancing tumor</text>
+</svg>

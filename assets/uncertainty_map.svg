@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="320" viewBox="0 0 900 320">
+  <rect width="900" height="320" fill="#0d1326"/>
+  <text x="24" y="34" fill="#e2e8f0" font-size="20" font-family="Segoe UI">Uncertainty Quantification (MC Dropout)</text>
+  <rect x="30" y="60" width="390" height="230" fill="#111827" stroke="#334155"/>
+  <rect x="480" y="60" width="390" height="230" fill="#111827" stroke="#334155"/>
+  <ellipse cx="225" cy="180" rx="112" ry="80" fill="#374151"/>
+  <ellipse cx="675" cy="180" rx="112" ry="80" fill="#374151"/>
+  <ellipse cx="668" cy="176" rx="64" ry="50" fill="#f59e0b" opacity="0.45"/>
+  <ellipse cx="688" cy="194" rx="45" ry="31" fill="#dc2626" opacity="0.52"/>
+  <text x="147" y="88" fill="#93c5fd" font-size="14" font-family="Segoe UI">Prediction</text>
+  <text x="607" y="88" fill="#fca5a5" font-size="14" font-family="Segoe UI">Predictive Variance</text>
+  <text x="34" y="309" fill="#94a3b8" font-size="12" font-family="Segoe UI">Higher uncertainty often appears at infiltrative tumor margins.</text>
+</svg>

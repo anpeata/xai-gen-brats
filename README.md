@@ -1,13 +1,180 @@
 # XAI-BraTS: Explainable & Generative AI for Brain Tumor MRI Analysis
 
-## Description
+Research-grade project for brain tumor MRI segmentation and synthesis, designed for PhD application portfolios in medical imaging, oncology AI, explainability, and generative modeling.
 
-A research-focused framework for Brain Tumor Segmentation that bridges the gap between high-performance Deep Learning and clinical trust. This repository implements Generative AI for high-fidelity MRI synthesis and Explainable AI (XAI) techniques to provide transparent, uncertainty-aware clinical decision support.
+## Why This Project Matters
 
-## Key Features (The "Core" of your Repo)
+This repository focuses on a high-impact clinical AI task: multi-modal brain tumor analysis on BraTS. It combines:
 
-- 🧠 Spatio-Temporal Segmentation: Multi-sequence MRI analysis (T1, T1ce, T2, FLAIR).
-- 🎨 Generative Data Augmentation: Using Diffusion or GAN-based models to handle class imbalance in tumor sub-regions.
-- 🔍 Explainable AI (XAI): Integrated saliency mapping and attention mechanisms to visualize model focus.
-- 🎲 Uncertainty Quantification: Bayesian or Monte Carlo Dropout layers to provide "confidence scores" for every prediction.
-- 📊 Evaluation: Rigorous benchmarking on the BraTS dataset using Dice, Hausdorff Distance, and ECE (Expected Calibration Error).
+- Strong segmentation performance targets.
+- Transparent decision support through explainability.
+- Uncertainty-aware outputs for safer interpretation.
+- Generative modeling to address rare tumor patterns and data scarcity.
+
+The project is designed to demonstrate practical research potential for supervisors in:
+
+- Medical image analysis.
+- Oncology-focused AI.
+- Explainable AI and trustworthy ML.
+- Generative modeling for healthcare.
+
+## Key Features
+
+- 🧠 Spatio-Temporal Segmentation: Multi-sequence MRI analysis with T1, T1ce, T2, FLAIR.
+- 🎨 Generative Data Augmentation: VAE-based synthetic MRI generation scaffold for rare pattern support.
+- 🔍 Explainable AI (XAI): Grad-CAM spatial explanations and modality-level SHAP attribution.
+- 🎲 Uncertainty Quantification: Monte Carlo Dropout-based uncertainty maps.
+- 📊 Evaluation: Dice, HD95 (Hausdorff 95), and ECE (Expected Calibration Error).
+
+## Dataset
+
+BraTS 2023 (public benchmark) is used as the core dataset.
+
+- Kaggle and Hugging Face distributions are both acceptable.
+- Place case folders under `data/processed/BraTS2023/`.
+- Each case folder should include:
+	- `*_t1.nii.gz`
+	- `*_t1ce.nii.gz`
+	- `*_t2.nii.gz`
+	- `*_flair.nii.gz`
+	- `*_seg.nii.gz`
+
+See `data/README.md` for details.
+
+## Repository Structure
+
+```text
+XAI-Gen-BraTS/
+├── data/
+│   └── README.md
+├── models/
+│   ├── __init__.py
+│   └── segmentation.py
+├── xai/
+│   ├── __init__.py
+│   ├── gradcam.py
+│   └── modality_shap.py
+├── generation/
+│   ├── __init__.py
+│   └── vae.py
+├── scripts/
+│   ├── dataset.py
+│   ├── train_segmentation.py
+│   ├── evaluate.py
+│   ├── run_xai.py
+│   ├── uncertainty.py
+│   ├── train_vae.py
+│   └── generate_samples.py
+├── notebooks/
+│   └── project_walkthrough.ipynb
+├── docs/
+│   ├── research_summary.md
+│   └── research_summary.pdf
+├── assets/
+│   ├── example_prediction.svg
+│   ├── gradcam_overlay.svg
+│   └── uncertainty_map.svg
+├── results/
+├── requirements.txt
+└── README.md
+```
+
+## Setup
+
+```bash
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+## Phase 1: Baseline Segmentation (Core)
+
+Train baseline model:
+
+```bash
+python scripts/train_segmentation.py --data-dir data/processed/BraTS2023 --model unet --epochs 50
+```
+
+Evaluate metrics (Dice, HD95, ECE):
+
+```bash
+python scripts/evaluate.py --data-dir data/processed/BraTS2023 --checkpoint checkpoints/best_model.pt
+```
+
+## Phase 2: Explainability + Uncertainty
+
+Run Grad-CAM and modality-level SHAP for a case:
+
+```bash
+python scripts/run_xai.py --checkpoint checkpoints/best_model.pt --case-dir data/processed/BraTS2023/<CASE_ID>
+```
+
+Run Monte Carlo Dropout uncertainty mapping:
+
+```bash
+python scripts/uncertainty.py --checkpoint checkpoints/best_model.pt --case-dir data/processed/BraTS2023/<CASE_ID> --passes 20
+```
+
+## Phase 3: Generative Extension
+
+Train lightweight VAE on slice-wise multi-modal inputs:
+
+```bash
+python scripts/train_vae.py --data-dir data/processed/BraTS2023 --epochs 30
+```
+
+Generate synthetic MRI panels:
+
+```bash
+python scripts/generate_samples.py --checkpoint checkpoints/vae.pt --n 8
+```
+
+## Visual Evidence
+
+- Segmentation example: `assets/example_prediction.svg`
+- Grad-CAM example: `assets/gradcam_overlay.svg`
+- Uncertainty map example: `assets/uncertainty_map.svg`
+
+## Research Comparison Angle (PhD-Level Discussion)
+
+In your reports or interviews, compare:
+
+- Black-box segmentation baseline only.
+- Interpretable segmentation with XAI maps.
+- Segmentation with synthetic augmentation support.
+
+Focus questions:
+
+- Do explanations align with known tumor regions?
+- Where is model confidence low, and why?
+- Does synthetic data improve minority sub-region performance?
+
+## Suggested 3-Week Timeline
+
+- Week 1: Data pipeline + baseline segmentation.
+- Week 2: Explainability and uncertainty analysis.
+- Week 3: Generative extension + final reporting.
+
+## PhD Application Talking Points
+
+This project demonstrates:
+
+- Hands-on biomedical imaging workflow (BraTS benchmark).
+- Clinical trust-focused AI (explainability + uncertainty).
+- Oncology relevance (brain tumor analysis).
+- Generative modeling capability (VAE augmentation).
+- Research communication readiness (figures, notebook, summary PDF).
+
+## Bonus: Research Summary
+
+One-page summary is available in:
+
+- `docs/research_summary.md`
+- `docs/research_summary.pdf`
+
+## Future Work
+
+- Replace VAE with diffusion-based synthesis for higher realism.
+- Add cross-site external validation.
+- Incorporate calibration plots and decision-threshold analysis.
+- Extend to transformer segmentation backbones.

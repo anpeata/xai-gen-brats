@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="320" viewBox="0 0 900 320">
+  <rect width="900" height="320" fill="#0b1020"/>
+  <text x="24" y="34" fill="#e2e8f0" font-size="20" font-family="Segoe UI">Grad-CAM Explainability View</text>
+  <rect x="30" y="60" width="390" height="230" fill="#111827" stroke="#334155"/>
+  <rect x="480" y="60" width="390" height="230" fill="#111827" stroke="#334155"/>
+  <ellipse cx="225" cy="180" rx="115" ry="82" fill="#374151"/>
+  <ellipse cx="675" cy="180" rx="115" ry="82" fill="#374151"/>
+  <ellipse cx="675" cy="176" rx="62" ry="48" fill="#f59e0b" opacity="0.62"/>
+  <ellipse cx="693" cy="186" rx="42" ry="33" fill="#ef4444" opacity="0.45"/>
+  <text x="145" y="88" fill="#93c5fd" font-size="14" font-family="Segoe UI">MRI Slice</text>
+  <text x="598" y="88" fill="#fda4af" font-size="14" font-family="Segoe UI">MRI + Grad-CAM</text>
+  <text x="34" y="309" fill="#94a3b8" font-size="12" font-family="Segoe UI">Hot regions correspond to model focus around lesion boundaries.</text>
+</svg>
