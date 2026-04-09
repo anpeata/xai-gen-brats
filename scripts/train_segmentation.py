@@ -99,6 +99,9 @@ def main():
         for batch_idx, batch in enumerate(progress, start=1):
             images = batch["image"].to(device)
             labels = batch["label"].to(device)
+            if labels.ndim == 4:
+                labels = labels.unsqueeze(1)
+            labels = labels.long().clamp(0, 3)
 
             optimizer.zero_grad(set_to_none=True)
             logits = model(images)

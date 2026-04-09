@@ -13,6 +13,7 @@
 | Setting | Dice Mean | Dice ET | Dice TC | Dice WT | HD95 Mean | ECE |
 |---|---:|---:|---:|---:|---:|---:|
 | Baseline segmentation | 0.0891 | - | - | - | 100.7852 | 0.0688 |
+| Baseline segmentation (CPU medium) | 0.0525 | - | - | - | 94.1585 | 0.5455 |
 | Baseline + uncertainty analysis | 0.0891 | - | - | - | 100.7852 | 0.0688 |
 | Baseline + synthetic augmentation |  |  |  |  |  |  |
 
@@ -34,11 +35,17 @@
 
 ## Synthetic Data Findings
 
-- Sample realism:
-- Performance impact:
+- Sample realism: 8 synthetic panels were generated from the 2-epoch CPU VAE checkpoint (`results/generated_smoke_v2/`), with coherent multi-modal structure and expected blur for early-stage training.
+- Performance impact: not yet measured; synthetic-to-real augmentation experiment is pending.
 
 ## Conclusions
 
 - Best current setting: CPU smoke-v2 baseline provides validated execution path for training, evaluation, XAI, and uncertainty artifacts.
 - Main failure modes: dependency/import gaps, class-index mismatch in early metric code, and full-volume shape mismatch before divisible padding.
-- Next three experiments: (1) run 2-5 epoch CPU baseline with larger `case-limit`; (2) execute GPU baseline for meaningful segmentation quality comparison; (3) train VAE and report synthetic sample quality.
+- Next three experiments: (1) run 20+ epoch GPU segmentation baseline with full-validation metrics; (2) run multi-seed XAI/uncertainty analysis over larger case subsets; (3) quantify synthetic augmentation impact against a no-augmentation control.
+
+## GPU Scale-Up Notes
+
+- Estimated acceleration for this pipeline with a modern single GPU is approximately 6x-20x for segmentation and 8x-25x for VAE training versus current CPU runs.
+- This enables longer and more statistically stable studies in practical wall-clock time: deeper training schedules, ablations, and case-wise qualitative reviews.
+- Recommended first GPU campaign: full-train baseline, followed by uncertainty calibration and synthetic augmentation A/B comparison under matched splits.

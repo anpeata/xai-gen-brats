@@ -22,6 +22,9 @@ Use this file as the primary source of truth for all executed runs.
 | run-004 | MC Dropout uncertainty (single case) | `python scripts/uncertainty.py --checkpoint checkpoints/best_model_cpu_smoke_v2.pt --case-dir data/processed/BraTS2023/BraTS-GLI-00000-000 --device cpu --passes 10 --out results/uncertainty/uncertainty_map_smoke_v2.png` | - | - | CPU, passes=10 | - | - | - | - | ~30-90 s | `results/uncertainty/uncertainty_map_smoke_v2.png` |
 | run-005 | XAI (Grad-CAM + SHAP, two extra cases) | `python scripts/run_xai.py --checkpoint checkpoints/best_model_cpu_smoke_v2.pt --case-dir <CASE_DIR> --device cpu --out-dir results/xai/smoke_v2/<CASE_ID> --shap-nsamples 20` | - | - | CPU, SHAP `nsamples=20`, two cases | - | - | - | - | ~40-60 s total | `results/xai/smoke_v2/BraTS-GLI-00001-000/*`, `results/xai/smoke_v2/BraTS-GLI-00001-001/*` |
 | run-006 | MC Dropout uncertainty (two extra cases) | `python scripts/uncertainty.py --checkpoint checkpoints/best_model_cpu_smoke_v2.pt --case-dir <CASE_DIR> --device cpu --passes 10 --out results/uncertainty/smoke_v2/uncertainty_map_<CASE_ID>.png` | - | - | CPU, passes=10, two cases | - | - | - | - | ~60-180 s total | `results/uncertainty/smoke_v2/uncertainty_map_BraTS-GLI-00001-000.png`, `results/uncertainty/smoke_v2/uncertainty_map_BraTS-GLI-00001-001.png` |
+| run-007 | CPU medium baseline segmentation | `python scripts/train_segmentation.py --data-dir data/processed/BraTS2023 --device cpu --epochs 2 --num-workers 0 --case-limit 32 --spatial-size 96 --num-samples 1 --max-train-batches 20 --max-val-batches 6 --out checkpoints/best_model_cpu_mid.pt` | 25 | 7 | UNet, spatial_size=96, num_samples=1, epochs=2 | 2 | 0.0525 | 94.1585 | 0.5455 | ~2.5-3.5 min | `checkpoints/best_model_cpu_mid.pt`, `results/metrics/baseline_metrics_cpu_mid.json` |
+| run-008 | VAE training (CPU medium) | `python scripts/train_vae.py --data-dir data/processed/BraTS2023 --device cpu --epochs 2 --batch-size 8 --out checkpoints/vae_cpu_mid.pt` | - | - | latent_dim=128, beta=1.0, batch=8 | 2 | - | - | - | ~22-24 min | `checkpoints/vae_cpu_mid.pt` |
+| run-009 | Synthetic generation from VAE | `python scripts/generate_samples.py --checkpoint checkpoints/vae_cpu_mid.pt --n 8 --out-dir results/generated_smoke_v2 --device cpu` | - | - | n=8 | - | - | - | - | <1 min | `results/generated_smoke_v2/synthetic_case_*.png` |
 
 ## Run Notes
 
@@ -59,4 +62,22 @@ Use this file as the primary source of truth for all executed runs.
 - Intended change: Extend uncertainty qualitative evidence to three total cases.
 - Result summary: additional uncertainty maps saved for `BraTS-GLI-00001-000` and `BraTS-GLI-00001-001`.
 - Failure modes: none observed in this run after prior uncertainty fixes.
+- Fixes applied: not required.
+
+### run-007
+- Intended change: run a stronger CPU baseline than smoke for better reporting.
+- Result summary: run completed and produced `baseline_metrics_cpu_mid.json` with improved HD95 but lower Dice/higher ECE than smoke-v2.
+- Failure modes: initial attempt failed with label out-of-bounds in DiceCE one-hot conversion.
+- Fixes applied: sanitized training labels before loss (`long`, shape-safe, clamp to class range) and re-ran successfully.
+
+### run-008
+- Intended change: train VAE on CPU for synthetic panel generation.
+- Result summary: training completed; loss improved from 0.0737 to 0.0174 in 2 epochs.
+- Failure modes: none observed.
+- Fixes applied: not required.
+
+### run-009
+- Intended change: generate synthetic modality panels for reporting evidence.
+- Result summary: eight synthetic panels generated under `results/generated_smoke_v2`.
+- Failure modes: none observed.
 - Fixes applied: not required.

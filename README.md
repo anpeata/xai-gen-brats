@@ -165,6 +165,7 @@ python scripts/generate_samples.py --checkpoint checkpoints/vae.pt --n 8
 - Segmentation example: `assets/example_prediction.svg`
 - Grad-CAM example: `assets/gradcam_overlay.svg`
 - Uncertainty map example: `assets/uncertainty_map.svg`
+- Synthetic panels (CPU VAE run): `results/generated_smoke_v2/`
 
 ## Results (Fill With Real Runs)
 
@@ -173,15 +174,16 @@ Add final values from generated files under `results/metrics/`.
 | Experiment Setting | Dice Mean | Dice ET | Dice TC | Dice WT | HD95 Mean | ECE | Notes |
 |---|---:|---:|---:|---:|---:|---:|---|
 | Baseline UNet (CPU smoke) | 0.0891 | - | - | - | 100.7852 | 0.0688 | case-limit=16, max-train-batches=5, max-val-batches=2 |
+| Baseline UNet (CPU medium) | 0.0525 | - | - | - | 94.1585 | 0.5455 | case-limit=32, epochs=2, max-train-batches=20, max-val-batches=6 |
 | Baseline + Uncertainty Analysis | 0.0891 | - | - | - | 100.7852 | 0.0688 | uncertainty maps generated for 3 cases under `results/uncertainty/smoke_v2/` |
-| Baseline + Synthetic Augmentation |  |  |  |  |  |  |  |
+| Baseline + Synthetic Augmentation |  |  |  |  |  |  | VAE trained on CPU (2 epochs), synthetic panels generated in `results/generated_smoke_v2/` |
 
 ### Qualitative Evidence Checklist
 
 - [ ] Segmentation overlay for at least 3 representative cases.
 - [x] Grad-CAM figure for at least 3 representative cases.
 - [x] Uncertainty map for at least 3 representative cases.
-- [ ] Synthetic sample panel generated from VAE.
+- [x] Synthetic sample panel generated from VAE.
 
 ### Key Insights (Replace With Project Findings)
 
@@ -198,6 +200,32 @@ Current qualitative artifact paths (smoke-v2):
 - `results/uncertainty/smoke_v2/uncertainty_map_BraTS-GLI-00000-000.png`
 - `results/uncertainty/smoke_v2/uncertainty_map_BraTS-GLI-00001-000.png`
 - `results/uncertainty/smoke_v2/uncertainty_map_BraTS-GLI-00001-001.png`
+
+Synthetic sample paths (CPU VAE):
+
+- `results/generated_smoke_v2/synthetic_case_00.png`
+- `results/generated_smoke_v2/synthetic_case_01.png`
+- `results/generated_smoke_v2/synthetic_case_02.png`
+- `results/generated_smoke_v2/synthetic_case_03.png`
+
+## Future GPU Scale-Up (Estimates)
+
+These estimates are practical planning ranges for this codebase and current preprocessing choices.
+
+- CPU baseline used here:
+	- Segmentation medium run (2 epochs, bounded batches): about 2.5-3.5 minutes total.
+	- VAE run (2 epochs over full case list): about 22-24 minutes total.
+- Single modern GPU (for example RTX 4090 / A5000 / A100) expected speed-up:
+	- Segmentation training throughput: typically ~6x to ~20x faster than CPU-only runs.
+	- VAE training throughput: typically ~8x to ~25x faster than CPU-only runs.
+- Expected runtime examples with same settings:
+	- Segmentation medium run: roughly 20-40 seconds.
+	- VAE 2-epoch run: roughly 1-3 minutes.
+- What this enables for better insights:
+	- Longer segmentation runs (20-100 epochs) and stronger convergence trends.
+	- Multi-seed experiments for variance/confidence intervals.
+	- More cases for XAI/uncertainty and richer failure-pattern analysis.
+	- Hyperparameter sweeps (crop size, model choice, loss variants).
 
 ## Reproducibility Checklist
 

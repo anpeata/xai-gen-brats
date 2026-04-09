@@ -77,6 +77,9 @@ def main():
         for batch_idx, batch in enumerate(val_loader, start=1):
             images = batch["image"].to(device)
             labels = batch["label"].to(device)
+            if labels.ndim == 4:
+                labels = labels.unsqueeze(1)
+            labels = labels.long().clamp(0, 3)
             logits = sliding_window_inference(
                 images,
                 roi_size=(args.spatial_size, args.spatial_size, args.spatial_size),
@@ -92,7 +95,7 @@ def main():
             hd95_metric(y_pred=pred_onehot, y=label_onehot)
 
             conf, pred_cls = torch.max(probs, dim=1)
-            true_cls = labels[:, 0, ...]
+            true_cls = labels[:, 0, ...].clamp(0, logits.shape[1] - 1)
             correct = (pred_cls == true_cls).float()
             confidence_values.extend(conf.cpu().numpy().ravel().tolist())
             correctness_values.extend(correct.cpu().numpy().ravel().tolist())
