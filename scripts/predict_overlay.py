@@ -55,25 +55,25 @@ def plot_overlay(flair: np.ndarray, gt: np.ndarray, pred: np.ndarray, out_file: 
     gt_mask = np.ma.masked_where(gt_slice == 0, gt_slice)
     pred_mask = np.ma.masked_where(pred_slice == 0, pred_slice)
 
-    fig, axes = plt.subplots(1, 3, figsize=(12, 4))
+    fig, axes = plt.subplots(1, 3, figsize=(12, 4.6))
 
     axes[0].imshow(flair_slice, cmap="gray")
-    axes[0].set_title("FLAIR")
+    axes[0].set_title("FLAIR", pad=12)
     axes[0].axis("off")
 
     axes[1].imshow(flair_slice, cmap="gray")
     axes[1].imshow(gt_mask, cmap="viridis", alpha=0.55, vmin=1, vmax=3)
-    axes[1].set_title("Ground Truth Overlay")
+    axes[1].set_title("Ground Truth Overlay", pad=12)
     axes[1].axis("off")
 
     axes[2].imshow(flair_slice, cmap="gray")
     axes[2].imshow(pred_mask, cmap="plasma", alpha=0.55, vmin=1, vmax=3)
-    axes[2].set_title("Prediction Overlay")
+    axes[2].set_title("Prediction Overlay", pad=12)
     axes[2].axis("off")
 
     out_file.parent.mkdir(parents=True, exist_ok=True)
-    fig.tight_layout()
-    fig.savefig(out_file, dpi=180)
+    fig.subplots_adjust(top=0.90, wspace=0.06)
+    fig.savefig(out_file, dpi=180, bbox_inches="tight", pad_inches=0.2)
     plt.close(fig)
 
 
