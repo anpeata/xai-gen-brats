@@ -121,8 +121,8 @@ def get_dataloaders(
 
 
 def post_pred_transform():
-    return AsDiscrete(argmax=True, to_onehot=3)
+    return AsDiscrete(argmax=True, to_onehot=4)
 
 
 def post_label_transform():
-    return AsDiscrete(to_onehot=3)
+    return AsDiscrete(to_onehot=4)

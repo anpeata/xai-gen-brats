@@ -7,7 +7,7 @@ from monai.networks.nets import SegResNet, UNet
 ModelName = Literal["unet", "segresnet"]
 
 
-def create_segmentation_model(model_name: ModelName, in_channels: int = 4, out_channels: int = 3):
+def create_segmentation_model(model_name: ModelName, in_channels: int = 4, out_channels: int = 4):
     """Factory for 3D segmentation models used in BraTS experiments."""
     if model_name == "unet":
         return UNet(

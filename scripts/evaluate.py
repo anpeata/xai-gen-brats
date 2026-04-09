@@ -54,8 +54,8 @@ def main():
     model.load_state_dict(ckpt["model_state_dict"])
     model.eval()
 
-    post_pred = Compose([Activations(softmax=True), AsDiscrete(argmax=True, to_onehot=3)])
-    post_label = AsDiscrete(to_onehot=3)
+    post_pred = Compose([Activations(softmax=True), AsDiscrete(argmax=True, to_onehot=4)])
+    post_label = AsDiscrete(to_onehot=4)
     dice_metric = DiceMetric(include_background=False, reduction="mean")
     hd95_metric = HausdorffDistanceMetric(include_background=False, percentile=95, reduction="mean")
 
