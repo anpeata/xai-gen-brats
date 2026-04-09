@@ -25,7 +25,7 @@ Option B: Hugging Face Hub
 - Download and prepare:
 	- `python scripts/download_brats.py --source huggingface --hf-repo-id <dataset-repo-id> --extract-zips`
 
-If you already downloaded data manually:
+If data has already been downloaded manually:
 - Put raw files under `data/raw/BraTS2023/` and run:
 	- `python scripts/download_brats.py --source none --extract-zips`
 

@@ -171,7 +171,7 @@ Add final values from generated files under `results/metrics/`.
 - [ ] Uncertainty map for at least 3 representative cases.
 - [ ] Synthetic sample panel generated from VAE.
 
-### Key Insights (Replace With Your Findings)
+### Key Insights (Replace With Project Findings)
 
 1. Which tumor sub-region achieves highest and lowest Dice, and why.
 2. Whether Grad-CAM aligns with lesion regions or reveals spurious focus.
@@ -191,7 +191,7 @@ Add final values from generated files under `results/metrics/`.
 
 ## Research Comparison Angle
 
-In your reports or interviews, compare:
+In reports or interviews, compare:
 
 - Black-box segmentation baseline only.
 - Interpretable segmentation with XAI maps.
