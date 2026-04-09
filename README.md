@@ -37,7 +37,7 @@ See `data/README.md` for details.
 ## Repository Structure
 
 ```text
-XAI-Gen-BraTS/
+xai-gen-brats/
 ├── data/
 │   └── README.md
 ├── models/
