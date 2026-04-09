@@ -29,3 +29,9 @@ Synapse BraTS archives typically use modality suffixes below:
 - `-seg` (segmentation mask)
 
 The preparation script converts these files into the processed case format expected by the training pipeline.
+
+## Storage and Source Policy
+
+- The full BraTS 2023 dataset is too large to upload to git (well above 100 GB in full archive plus extracted form).
+- Data is stored locally only and is excluded from version control.
+- The dataset used in this repository was downloaded from the BraTS 2023 Challenge distribution on Synapse | Sage Bionetworks.
