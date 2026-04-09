@@ -21,6 +21,9 @@ def parse_args():
     p.add_argument("--device", type=str, default="cuda" if torch.cuda.is_available() else "cpu")
     p.add_argument("--out", type=str, default="results/metrics.json")
     p.add_argument("--num-workers", type=int, default=4)
+    p.add_argument("--case-limit", type=int, default=0)
+    p.add_argument("--max-val-batches", type=int, default=0)
+    p.add_argument("--spatial-size", type=int, default=128)
     return p.parse_args()
 
 
@@ -46,6 +49,9 @@ def main():
         data_dir=args.data_dir,
         batch_size=1,
         num_workers=args.num_workers,
+        case_limit=args.case_limit,
+        spatial_size=(args.spatial_size, args.spatial_size, args.spatial_size),
+        num_samples=1,
     )
 
     ckpt = torch.load(args.checkpoint, map_location=device)
@@ -63,10 +69,15 @@ def main():
     correctness_values = []
 
     with torch.no_grad():
-        for batch in val_loader:
+        for batch_idx, batch in enumerate(val_loader, start=1):
             images = batch["image"].to(device)
             labels = batch["label"].to(device)
-            logits = sliding_window_inference(images, roi_size=(128, 128, 128), sw_batch_size=1, predictor=model)
+            logits = sliding_window_inference(
+                images,
+                roi_size=(args.spatial_size, args.spatial_size, args.spatial_size),
+                sw_batch_size=1,
+                predictor=model,
+            )
             probs = torch.softmax(logits, dim=1)
 
             pred_onehot = [post_pred(i) for i in logits]
@@ -79,6 +90,9 @@ def main():
             correct = (pred_cls == true_cls).float()
             confidence_values.extend(conf.cpu().numpy().ravel().tolist())
             correctness_values.extend(correct.cpu().numpy().ravel().tolist())
+
+            if args.max_val_batches > 0 and batch_idx >= args.max_val_batches:
+                break
 
     metrics = {
         "n_validation_cases": n_val,
