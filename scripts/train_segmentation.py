@@ -139,6 +139,17 @@ def main():
             )
             print(f"Saved new best checkpoint to {out_path} (val_dice={best_dice:.4f})")
 
+        # Always save the latest epoch checkpoint to guarantee a usable artifact.
+        torch.save(
+            {
+                "model_state_dict": model.state_dict(),
+                "epoch": epoch,
+                "val_dice": val_dice,
+                "model_name": args.model,
+            },
+            out_path,
+        )
+
     print(f"Training complete. Best validation Dice={best_dice:.4f}")
 
 
