@@ -19,17 +19,17 @@
 ## Qualitative Findings
 
 - Case 1 (`BraTS-GLI-00000-000`): Grad-CAM and uncertainty maps were generated successfully from the smoke-v2 checkpoint.
-- Case 2: pending.
-- Case 3: pending.
+- Case 2 (`BraTS-GLI-00001-000`): Grad-CAM, SHAP, and uncertainty artifacts generated with CPU-bounded settings.
+- Case 3 (`BraTS-GLI-00001-001`): Grad-CAM, SHAP, and uncertainty artifacts generated with CPU-bounded settings.
 
 ## Explainability Findings
 
-- Grad-CAM: `results/xai/smoke_v2/gradcam_overlay.png` generated and aligned with end-to-end inference on padded full volume.
-- SHAP modality attribution: `results/xai/smoke_v2/shap_modalities.png` generated with CPU-bounded `nsamples=20`.
+- Grad-CAM: generated for 3 cases under `results/xai/smoke_v2/` with stable execution on padded full volumes.
+- SHAP modality attribution: generated for 3 cases with CPU-bounded `nsamples=20`.
 
 ## Uncertainty Findings
 
-- Boundary uncertainty: `results/uncertainty/uncertainty_map_smoke_v2.png` generated using MC Dropout (`passes=10`), suitable for visual boundary-risk inspection.
+- Boundary uncertainty: generated for 3 cases under `results/uncertainty/smoke_v2/` using MC Dropout (`passes=10`), suitable for visual boundary-risk inspection.
 - Calibration behavior: global ECE in smoke setting is 0.0688; larger runs are needed for stable calibration claims.
 
 ## Synthetic Data Findings
@@ -41,4 +41,4 @@
 
 - Best current setting: CPU smoke-v2 baseline provides validated execution path for training, evaluation, XAI, and uncertainty artifacts.
 - Main failure modes: dependency/import gaps, class-index mismatch in early metric code, and full-volume shape mismatch before divisible padding.
-- Next three experiments: (1) run 2-5 epoch CPU baseline with larger `case-limit`; (2) generate XAI/uncertainty for at least three cases; (3) execute GPU baseline for meaningful segmentation quality comparison.
+- Next three experiments: (1) run 2-5 epoch CPU baseline with larger `case-limit`; (2) execute GPU baseline for meaningful segmentation quality comparison; (3) train VAE and report synthetic sample quality.

@@ -173,14 +173,14 @@ Add final values from generated files under `results/metrics/`.
 | Experiment Setting | Dice Mean | Dice ET | Dice TC | Dice WT | HD95 Mean | ECE | Notes |
 |---|---:|---:|---:|---:|---:|---:|---|
 | Baseline UNet (CPU smoke) | 0.0891 | - | - | - | 100.7852 | 0.0688 | case-limit=16, max-train-batches=5, max-val-batches=2 |
-| Baseline + Uncertainty Analysis | 0.0891 | - | - | - | 100.7852 | 0.0688 | uncertainty map generated at `results/uncertainty/uncertainty_map_smoke_v2.png` |
+| Baseline + Uncertainty Analysis | 0.0891 | - | - | - | 100.7852 | 0.0688 | uncertainty maps generated for 3 cases under `results/uncertainty/smoke_v2/` |
 | Baseline + Synthetic Augmentation |  |  |  |  |  |  |  |
 
 ### Qualitative Evidence Checklist
 
 - [ ] Segmentation overlay for at least 3 representative cases.
-- [ ] Grad-CAM figure for at least 3 representative cases.
-- [ ] Uncertainty map for at least 3 representative cases.
+- [x] Grad-CAM figure for at least 3 representative cases.
+- [x] Uncertainty map for at least 3 representative cases.
 - [ ] Synthetic sample panel generated from VAE.
 
 ### Key Insights (Replace With Project Findings)
@@ -189,6 +189,15 @@ Add final values from generated files under `results/metrics/`.
 2. Whether Grad-CAM aligns with lesion regions or reveals spurious focus.
 3. Whether uncertainty peaks correlate with boundary errors.
 4. Whether synthetic augmentation improves minority-region performance.
+
+Current qualitative artifact paths (smoke-v2):
+
+- `results/xai/smoke_v2/gradcam_overlay.png`
+- `results/xai/smoke_v2/BraTS-GLI-00001-000/gradcam_overlay.png`
+- `results/xai/smoke_v2/BraTS-GLI-00001-001/gradcam_overlay.png`
+- `results/uncertainty/smoke_v2/uncertainty_map_BraTS-GLI-00000-000.png`
+- `results/uncertainty/smoke_v2/uncertainty_map_BraTS-GLI-00001-000.png`
+- `results/uncertainty/smoke_v2/uncertainty_map_BraTS-GLI-00001-001.png`
 
 ## Reproducibility Checklist
 

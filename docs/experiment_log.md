@@ -20,6 +20,8 @@ Use this file as the primary source of truth for all executed runs.
 | run-002 | XAI (Grad-CAM, single case) | `python scripts/run_xai.py --checkpoint checkpoints/best_model_cpu_smoke_v2.pt --case-dir data/processed/BraTS2023/BraTS-GLI-00000-000 --device cpu --out-dir results/xai/smoke_v2 --skip-shap` | - | - | CPU, single case, divisible padding enabled | - | - | - | - | ~30-60 s | `results/xai/smoke_v2/gradcam_overlay.png` |
 | run-003 | XAI (SHAP modality attribution, single case) | `python scripts/run_xai.py --checkpoint checkpoints/best_model_cpu_smoke_v2.pt --case-dir data/processed/BraTS2023/BraTS-GLI-00000-000 --device cpu --out-dir results/xai/smoke_v2 --shap-nsamples 20` | - | - | CPU, SHAP `nsamples=20` | - | - | - | - | ~20-40 s | `results/xai/smoke_v2/shap_modalities.png` |
 | run-004 | MC Dropout uncertainty (single case) | `python scripts/uncertainty.py --checkpoint checkpoints/best_model_cpu_smoke_v2.pt --case-dir data/processed/BraTS2023/BraTS-GLI-00000-000 --device cpu --passes 10 --out results/uncertainty/uncertainty_map_smoke_v2.png` | - | - | CPU, passes=10 | - | - | - | - | ~30-90 s | `results/uncertainty/uncertainty_map_smoke_v2.png` |
+| run-005 | XAI (Grad-CAM + SHAP, two extra cases) | `python scripts/run_xai.py --checkpoint checkpoints/best_model_cpu_smoke_v2.pt --case-dir <CASE_DIR> --device cpu --out-dir results/xai/smoke_v2/<CASE_ID> --shap-nsamples 20` | - | - | CPU, SHAP `nsamples=20`, two cases | - | - | - | - | ~40-60 s total | `results/xai/smoke_v2/BraTS-GLI-00001-000/*`, `results/xai/smoke_v2/BraTS-GLI-00001-001/*` |
+| run-006 | MC Dropout uncertainty (two extra cases) | `python scripts/uncertainty.py --checkpoint checkpoints/best_model_cpu_smoke_v2.pt --case-dir <CASE_DIR> --device cpu --passes 10 --out results/uncertainty/smoke_v2/uncertainty_map_<CASE_ID>.png` | - | - | CPU, passes=10, two cases | - | - | - | - | ~60-180 s total | `results/uncertainty/smoke_v2/uncertainty_map_BraTS-GLI-00001-000.png`, `results/uncertainty/smoke_v2/uncertainty_map_BraTS-GLI-00001-001.png` |
 
 ## Run Notes
 
@@ -46,3 +48,15 @@ Use this file as the primary source of truth for all executed runs.
 - Result summary: Uncertainty map saved successfully.
 - Failure modes: same potential tensor shape mismatch risk as XAI path on full-volume inference.
 - Fixes applied: added `DivisiblePadd(k=16)` in `scripts/uncertainty.py` input transform.
+
+### run-005
+- Intended change: Extend XAI qualitative evidence to three total cases.
+- Result summary: Grad-CAM and SHAP outputs generated for `BraTS-GLI-00001-000` and `BraTS-GLI-00001-001`.
+- Failure modes: none observed in this run after prior XAI fixes.
+- Fixes applied: not required.
+
+### run-006
+- Intended change: Extend uncertainty qualitative evidence to three total cases.
+- Result summary: additional uncertainty maps saved for `BraTS-GLI-00001-000` and `BraTS-GLI-00001-001`.
+- Failure modes: none observed in this run after prior uncertainty fixes.
+- Fixes applied: not required.
