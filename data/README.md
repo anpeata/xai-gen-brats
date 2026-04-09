@@ -1,11 +1,16 @@
 # Data Layout
 
-This project expects BraTS files in a structure similar to:
+This repository uses the following data organization:
 
-- `data/raw/BraTS2023/` for downloaded source files
-- `data/processed/BraTS2023/` for preprocessed cases
+- `data/raw/BraTS2023/archives/` stores downloaded challenge archives.
+	- `GLI/`, `MEN/`, `PED/`, and `misc/` group archives by challenge family.
+- `data/raw/BraTS2023/extracted/` stores extracted support packages.
+- `data/raw/BraTS2023/incomplete/` stores unfinished browser downloads.
+- `data/processed/BraTS2023/` stores training-ready case folders.
 
-Each case directory should include the MRI modalities and segmentation mask:
+## Processed Case Format
+
+Each processed case directory must contain:
 
 - `*_t1.nii.gz`
 - `*_t1ce.nii.gz`
@@ -13,4 +18,14 @@ Each case directory should include the MRI modalities and segmentation mask:
 - `*_flair.nii.gz`
 - `*_seg.nii.gz`
 
-You can download BraTS from Kaggle or Hugging Face and then place files under `data/raw/`.
+## Source Naming Notes
+
+Synapse BraTS archives typically use modality suffixes below:
+
+- `-t1n` (mapped to `t1`)
+- `-t1c` (mapped to `t1ce`)
+- `-t2w` (mapped to `t2`)
+- `-t2f` (mapped to `flair`)
+- `-seg` (segmentation mask)
+
+The preparation script converts these files into the processed case format expected by the training pipeline.

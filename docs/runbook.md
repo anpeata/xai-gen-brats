@@ -45,6 +45,9 @@ Quick verification command:
 
 ## Step 3: Baseline segmentation
 
+CPU smoke-test command (recommended before full training):
+- `python scripts/train_segmentation.py --data-dir data/processed/BraTS2023 --quick-cpu --device cpu --out checkpoints/best_model_cpu_smoke.pt`
+
 Run:
 - `python scripts/train_segmentation.py --data-dir data/processed/BraTS2023 --model unet --epochs 50`
 
