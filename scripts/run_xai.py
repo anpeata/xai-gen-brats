@@ -4,7 +4,7 @@ import argparse
 from pathlib import Path
 
 import torch
-from monai.transforms import Compose, EnsureChannelFirstd, EnsureTyped, LoadImaged, NormalizeIntensityd
+from monai.transforms import Compose, DivisiblePadd, EnsureChannelFirstd, EnsureTyped, LoadImaged, NormalizeIntensityd
 
 from models.segmentation import create_segmentation_model
 from xai.gradcam import run_gradcam
@@ -17,6 +17,8 @@ def parse_args():
     p.add_argument("--case-dir", type=str, required=True)
     p.add_argument("--device", type=str, default="cuda" if torch.cuda.is_available() else "cpu")
     p.add_argument("--out-dir", type=str, default="results")
+    p.add_argument("--skip-shap", action="store_true")
+    p.add_argument("--shap-nsamples", type=int, default=100)
     return p.parse_args()
 
 
@@ -34,6 +36,7 @@ def load_case(case_dir: Path):
         [
             LoadImaged(keys=["image"]),
             EnsureChannelFirstd(keys=["image"]),
+            DivisiblePadd(keys=["image"], k=16),
             NormalizeIntensityd(keys="image", nonzero=True, channel_wise=True),
             EnsureTyped(keys=["image"]),
         ]
@@ -66,7 +69,14 @@ def main():
 
     target_layer = pick_target_layer(model)
     run_gradcam(model, x, target_layer, out_file=str(out_dir / "gradcam_overlay.png"))
-    run_modality_shap(model, x, out_file=str(out_dir / "shap_modalities.png"))
+
+    if not args.skip_shap:
+        run_modality_shap(
+            model,
+            x,
+            out_file=str(out_dir / "shap_modalities.png"),
+            nsamples=args.shap_nsamples,
+        )
 
     print(f"Saved XAI outputs to {out_dir}")
 

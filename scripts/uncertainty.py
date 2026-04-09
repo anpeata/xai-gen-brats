@@ -6,7 +6,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
-from monai.transforms import Compose, EnsureChannelFirstd, EnsureTyped, LoadImaged, NormalizeIntensityd
+from monai.transforms import Compose, DivisiblePadd, EnsureChannelFirstd, EnsureTyped, LoadImaged, NormalizeIntensityd
 
 from models.segmentation import create_segmentation_model
 
@@ -41,6 +41,7 @@ def load_case(case_dir: Path):
         [
             LoadImaged(keys=["image"]),
             EnsureChannelFirstd(keys=["image"]),
+            DivisiblePadd(keys=["image"], k=16),
             NormalizeIntensityd(keys="image", nonzero=True, channel_wise=True),
             EnsureTyped(keys=["image"]),
         ]

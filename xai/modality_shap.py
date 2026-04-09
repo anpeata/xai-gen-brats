@@ -18,8 +18,9 @@ def _predict_from_modalities(model: torch.nn.Module, samples: np.ndarray, base_v
                 x[:, c] *= float(row[c])
             logits = model(x)
             probs = torch.softmax(logits, dim=1)
-            # Use ET (class 2) average probability as scalar target.
-            preds.append(float(probs[:, 2, ...].mean().item()))
+            # Use ET average probability as scalar target (BraTS ET label index = 3).
+            et_idx = min(3, probs.shape[1] - 1)
+            preds.append(float(probs[:, et_idx, ...].mean().item()))
     return np.asarray(preds, dtype=np.float32)
 
 
@@ -27,6 +28,7 @@ def run_modality_shap(
     model: torch.nn.Module,
     base_volume: torch.Tensor,
     out_file: str = "results/shap_modalities.png",
+    nsamples: int = 100,
 ):
     model.eval()
     background = np.ones((16, 4), dtype=np.float32)
@@ -45,7 +47,7 @@ def run_modality_shap(
     )
 
     explainer = shap.KernelExplainer(lambda z: _predict_from_modalities(model, z, base_volume), background)
-    shap_values = explainer.shap_values(samples, nsamples=100)
+    shap_values = explainer.shap_values(samples, nsamples=nsamples)
 
     mean_abs = np.mean(np.abs(shap_values), axis=0)
     labels = ["T1", "T1ce", "T2", "FLAIR"]

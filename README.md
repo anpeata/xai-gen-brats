@@ -128,6 +128,18 @@ Run Grad-CAM and modality-level SHAP for a case:
 python scripts/run_xai.py --checkpoint checkpoints/best_model.pt --case-dir data/processed/BraTS2023/<CASE_ID>
 ```
 
+CPU smoke shortcut (Grad-CAM only):
+
+```bash
+python scripts/run_xai.py --checkpoint checkpoints/best_model_cpu_smoke_v2.pt --case-dir data/processed/BraTS2023/<CASE_ID> --device cpu --out-dir results/xai/smoke_v2 --skip-shap
+```
+
+CPU smoke SHAP (reduced cost):
+
+```bash
+python scripts/run_xai.py --checkpoint checkpoints/best_model_cpu_smoke_v2.pt --case-dir data/processed/BraTS2023/<CASE_ID> --device cpu --out-dir results/xai/smoke_v2 --shap-nsamples 20
+```
+
 Run Monte Carlo Dropout uncertainty mapping:
 
 ```bash
@@ -161,7 +173,7 @@ Add final values from generated files under `results/metrics/`.
 | Experiment Setting | Dice Mean | Dice ET | Dice TC | Dice WT | HD95 Mean | ECE | Notes |
 |---|---:|---:|---:|---:|---:|---:|---|
 | Baseline UNet (CPU smoke) | 0.0891 | - | - | - | 100.7852 | 0.0688 | case-limit=16, max-train-batches=5, max-val-batches=2 |
-| Baseline + Uncertainty Analysis |  |  |  |  |  |  |  |
+| Baseline + Uncertainty Analysis | 0.0891 | - | - | - | 100.7852 | 0.0688 | uncertainty map generated at `results/uncertainty/uncertainty_map_smoke_v2.png` |
 | Baseline + Synthetic Augmentation |  |  |  |  |  |  |  |
 
 ### Qualitative Evidence Checklist
