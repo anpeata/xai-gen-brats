@@ -7,11 +7,18 @@ import torch
 from monai.inferers import sliding_window_inference
 from monai.losses import DiceCELoss
 from monai.metrics import DiceMetric
-from monai.transforms import Activations, Compose
 from tqdm import tqdm
 
 from models.segmentation import create_segmentation_model
-from scripts.dataset import get_dataloaders, post_label_transform, post_pred_transform
+from scripts.dataset import get_dataloaders
+
+
+def to_onehot_tensor(labels: torch.Tensor, num_classes: int) -> torch.Tensor:
+    labels = labels.long().clamp(0, num_classes - 1)
+    if labels.ndim == 5 and labels.shape[1] == 1:
+        labels = labels[:, 0]
+    onehot = torch.nn.functional.one_hot(labels, num_classes=num_classes)
+    return onehot.permute(0, 4, 1, 2, 3).float()
 
 
 def parse_args():
@@ -80,8 +87,6 @@ def main():
     loss_fn = DiceCELoss(to_onehot_y=True, softmax=True)
 
     dice_metric = DiceMetric(include_background=False, reduction="mean")
-    post_pred = Compose([Activations(softmax=True), post_pred_transform()])
-    post_label = post_label_transform()
 
     out_path = Path(args.out)
     out_path.parent.mkdir(parents=True, exist_ok=True)
@@ -116,9 +121,10 @@ def main():
                 images = batch["image"].to(device)
                 labels = batch["label"].to(device)
                 logits = sliding_window_inference(images, roi_size=spatial_size, sw_batch_size=1, predictor=model)
-                preds = [post_pred(i) for i in logits]
-                gts = [post_label(i) for i in labels]
-                dice_metric(y_pred=preds, y=gts)
+                pred_cls = torch.argmax(logits, dim=1)
+                pred_onehot = to_onehot_tensor(pred_cls, num_classes=logits.shape[1])
+                label_onehot = to_onehot_tensor(labels, num_classes=logits.shape[1])
+                dice_metric(y_pred=pred_onehot, y=label_onehot)
 
                 if args.max_val_batches > 0 and batch_idx >= args.max_val_batches:
                     break

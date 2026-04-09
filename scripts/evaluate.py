@@ -8,10 +8,17 @@ import numpy as np
 import torch
 from monai.inferers import sliding_window_inference
 from monai.metrics import DiceMetric, HausdorffDistanceMetric
-from monai.transforms import Activations, AsDiscrete, Compose
 
 from models.segmentation import create_segmentation_model
 from scripts.dataset import get_dataloaders
+
+
+def to_onehot_tensor(labels: torch.Tensor, num_classes: int) -> torch.Tensor:
+    labels = labels.long().clamp(0, num_classes - 1)
+    if labels.ndim == 5 and labels.shape[1] == 1:
+        labels = labels[:, 0]
+    onehot = torch.nn.functional.one_hot(labels, num_classes=num_classes)
+    return onehot.permute(0, 4, 1, 2, 3).float()
 
 
 def parse_args():
@@ -60,8 +67,6 @@ def main():
     model.load_state_dict(ckpt["model_state_dict"])
     model.eval()
 
-    post_pred = Compose([Activations(softmax=True), AsDiscrete(argmax=True, to_onehot=4)])
-    post_label = AsDiscrete(to_onehot=4)
     dice_metric = DiceMetric(include_background=False, reduction="mean")
     hd95_metric = HausdorffDistanceMetric(include_background=False, percentile=95, reduction="mean")
 
@@ -80,8 +85,9 @@ def main():
             )
             probs = torch.softmax(logits, dim=1)
 
-            pred_onehot = [post_pred(i) for i in logits]
-            label_onehot = [post_label(i) for i in labels]
+            pred_cls = torch.argmax(logits, dim=1)
+            pred_onehot = to_onehot_tensor(pred_cls, num_classes=logits.shape[1])
+            label_onehot = to_onehot_tensor(labels, num_classes=logits.shape[1])
             dice_metric(y_pred=pred_onehot, y=label_onehot)
             hd95_metric(y_pred=pred_onehot, y=label_onehot)
 
