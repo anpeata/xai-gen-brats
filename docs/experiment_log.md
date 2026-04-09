@@ -25,6 +25,7 @@ Use this file as the primary source of truth for all executed runs.
 | run-007 | CPU medium baseline segmentation | `python scripts/train_segmentation.py --data-dir data/processed/BraTS2023 --device cpu --epochs 2 --num-workers 0 --case-limit 32 --spatial-size 96 --num-samples 1 --max-train-batches 20 --max-val-batches 6 --out checkpoints/best_model_cpu_mid.pt` | 25 | 7 | UNet, spatial_size=96, num_samples=1, epochs=2 | 2 | 0.0525 | 94.1585 | 0.5455 | ~2.5-3.5 min | `checkpoints/best_model_cpu_mid.pt`, `results/metrics/baseline_metrics_cpu_mid.json` |
 | run-008 | VAE training (CPU medium) | `python scripts/train_vae.py --data-dir data/processed/BraTS2023 --device cpu --epochs 2 --batch-size 8 --out checkpoints/vae_cpu_mid.pt` | - | - | latent_dim=128, beta=1.0, batch=8 | 2 | - | - | - | ~22-24 min | `checkpoints/vae_cpu_mid.pt` |
 | run-009 | Synthetic generation from VAE | `python scripts/generate_samples.py --checkpoint checkpoints/vae_cpu_mid.pt --n 8 --out-dir results/generated_smoke_v2 --device cpu` | - | - | n=8 | - | - | - | - | <1 min | `results/generated_smoke_v2/synthetic_case_*.png` |
+| run-010 | CPU long baseline segmentation | `python scripts/train_segmentation.py --data-dir data/processed/BraTS2023 --device cpu --epochs 5 --num-workers 0 --case-limit 64 --spatial-size 96 --num-samples 1 --max-train-batches 40 --max-val-batches 10 --out checkpoints/best_model_cpu_long_v1.pt` | 51 | 13 | UNet, spatial_size=96, num_samples=1, epochs=5 | 5 | 0.1240 | 91.6189 | 0.3570 | ~12-15 min | `checkpoints/best_model_cpu_long_v1.pt`, `results/metrics/baseline_metrics_cpu_long_v1.json` |
 
 ## Run Notes
 
@@ -80,4 +81,10 @@ Use this file as the primary source of truth for all executed runs.
 - Intended change: generate synthetic modality panels for reporting evidence.
 - Result summary: eight synthetic panels generated under `results/generated_smoke_v2`.
 - Failure modes: none observed.
+- Fixes applied: not required.
+
+### run-010
+- Intended change: obtain stronger CPU-only segmentation evidence with a longer bounded run.
+- Result summary: completed successfully with improved Dice and HD95 versus earlier CPU runs.
+- Failure modes: none observed after prior label-safety fixes.
 - Fixes applied: not required.

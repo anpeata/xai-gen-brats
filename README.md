@@ -175,6 +175,7 @@ Add final values from generated files under `results/metrics/`.
 |---|---:|---:|---:|---:|---:|---:|---|
 | Baseline UNet (CPU smoke) | 0.0891 | - | - | - | 100.7852 | 0.0688 | case-limit=16, max-train-batches=5, max-val-batches=2 |
 | Baseline UNet (CPU medium) | 0.0525 | - | - | - | 94.1585 | 0.5455 | case-limit=32, epochs=2, max-train-batches=20, max-val-batches=6 |
+| Baseline UNet (CPU long v1) | 0.1240 | - | - | - | 91.6189 | 0.3570 | case-limit=64, epochs=5, max-train-batches=40, max-val-batches=10 |
 | Baseline + Uncertainty Analysis | 0.0891 | - | - | - | 100.7852 | 0.0688 | uncertainty maps generated for 3 cases under `results/uncertainty/smoke_v2/` |
 | Baseline + Synthetic Augmentation |  |  |  |  |  |  | VAE trained on CPU (2 epochs), synthetic panels generated in `results/generated_smoke_v2/` |
 

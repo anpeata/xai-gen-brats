@@ -14,6 +14,7 @@
 |---|---:|---:|---:|---:|---:|---:|
 | Baseline segmentation | 0.0891 | - | - | - | 100.7852 | 0.0688 |
 | Baseline segmentation (CPU medium) | 0.0525 | - | - | - | 94.1585 | 0.5455 |
+| Baseline segmentation (CPU long v1) | 0.1240 | - | - | - | 91.6189 | 0.3570 |
 | Baseline + uncertainty analysis | 0.0891 | - | - | - | 100.7852 | 0.0688 |
 | Baseline + synthetic augmentation |  |  |  |  |  |  |
 
@@ -40,12 +41,14 @@
 
 ## Conclusions
 
-- Best current setting: CPU smoke-v2 baseline provides validated execution path for training, evaluation, XAI, and uncertainty artifacts.
+- Best current setting: CPU long v1 baseline (`epochs=5`, `case-limit=64`) currently provides the strongest segmentation metrics in this repository.
 - Main failure modes: dependency/import gaps, class-index mismatch in early metric code, and full-volume shape mismatch before divisible padding.
-- Next three experiments: (1) run 20+ epoch GPU segmentation baseline with full-validation metrics; (2) run multi-seed XAI/uncertainty analysis over larger case subsets; (3) quantify synthetic augmentation impact against a no-augmentation control.
+- Next three experiments: (1) run longer CPU baselines (10+ epochs) with fixed random seeds; (2) run multi-seed XAI/uncertainty analysis over larger case subsets; (3) quantify synthetic augmentation impact against a no-augmentation control.
 
 ## GPU Scale-Up Notes
 
 - Estimated acceleration for this pipeline with a modern single GPU is approximately 6x-20x for segmentation and 8x-25x for VAE training versus current CPU runs.
 - This enables longer and more statistically stable studies in practical wall-clock time: deeper training schedules, ablations, and case-wise qualitative reviews.
 - Recommended first GPU campaign: full-train baseline, followed by uncertainty calibration and synthetic augmentation A/B comparison under matched splits.
+
+No GPU runs were executed in this project environment so far; all reported metrics and artifacts were generated on CPU only.
