@@ -160,7 +160,7 @@ Add final values from generated files under `results/metrics/`.
 
 | Experiment Setting | Dice Mean | Dice ET | Dice TC | Dice WT | HD95 Mean | ECE | Notes |
 |---|---:|---:|---:|---:|---:|---:|---|
-| Baseline UNet |  |  |  |  |  |  |  |
+| Baseline UNet (CPU smoke) | 0.0891 | - | - | - | 100.7852 | 0.0688 | case-limit=16, max-train-batches=5, max-val-batches=2 |
 | Baseline + Uncertainty Analysis |  |  |  |  |  |  |  |
 | Baseline + Synthetic Augmentation |  |  |  |  |  |  |  |
 
