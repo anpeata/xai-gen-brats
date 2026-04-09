@@ -19,6 +19,10 @@ checkpoints/
 logs/
 results/generated/
 results/predictions/
+!results/predictions/
+results/predictions/*
+!results/predictions/smoke_v2/
+!results/predictions/smoke_v2/*.png
 results/uncertainty/
 !results/uncertainty/
 results/uncertainty/*

@@ -26,6 +26,7 @@ Use this file as the primary source of truth for all executed runs.
 | run-008 | VAE training (CPU medium) | `python scripts/train_vae.py --data-dir data/processed/BraTS2023 --device cpu --epochs 2 --batch-size 8 --out checkpoints/vae_cpu_mid.pt` | - | - | latent_dim=128, beta=1.0, batch=8 | 2 | - | - | - | ~22-24 min | `checkpoints/vae_cpu_mid.pt` |
 | run-009 | Synthetic generation from VAE | `python scripts/generate_samples.py --checkpoint checkpoints/vae_cpu_mid.pt --n 8 --out-dir results/generated_smoke_v2 --device cpu` | - | - | n=8 | - | - | - | - | <1 min | `results/generated_smoke_v2/synthetic_case_*.png` |
 | run-010 | CPU long baseline segmentation | `python scripts/train_segmentation.py --data-dir data/processed/BraTS2023 --device cpu --epochs 5 --num-workers 0 --case-limit 64 --spatial-size 96 --num-samples 1 --max-train-batches 40 --max-val-batches 10 --out checkpoints/best_model_cpu_long_v1.pt` | 51 | 13 | UNet, spatial_size=96, num_samples=1, epochs=5 | 5 | 0.1240 | 91.6189 | 0.3570 | ~12-15 min | `checkpoints/best_model_cpu_long_v1.pt`, `results/metrics/baseline_metrics_cpu_long_v1.json` |
+| run-011 | Segmentation overlays (3 cases) | `python scripts/predict_overlay.py --checkpoint checkpoints/best_model_cpu_long_v1.pt --case-dir <CASE_DIR> --device cpu --out results/predictions/smoke_v2/overlay_<CASE_ID>.png` | - | - | CPU, 3 representative cases | - | - | - | - | ~30-90 s total | `results/predictions/smoke_v2/overlay_BraTS-GLI-00000-000.png`, `results/predictions/smoke_v2/overlay_BraTS-GLI-00001-000.png`, `results/predictions/smoke_v2/overlay_BraTS-GLI-00001-001.png` |
 
 ## Run Notes
 
@@ -87,4 +88,10 @@ Use this file as the primary source of truth for all executed runs.
 - Intended change: obtain stronger CPU-only segmentation evidence with a longer bounded run.
 - Result summary: completed successfully with improved Dice and HD95 versus earlier CPU runs.
 - Failure modes: none observed after prior label-safety fixes.
+- Fixes applied: not required.
+
+### run-011
+- Intended change: complete qualitative checklist with prediction-vs-label overlays for representative cases.
+- Result summary: overlays generated for three GLI cases using the CPU long checkpoint.
+- Failure modes: none observed.
 - Fixes applied: not required.

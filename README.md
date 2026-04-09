@@ -181,7 +181,7 @@ Add final values from generated files under `results/metrics/`.
 
 ### Qualitative Evidence Checklist
 
-- [ ] Segmentation overlay for at least 3 representative cases.
+- [x] Segmentation overlay for at least 3 representative cases.
 - [x] Grad-CAM figure for at least 3 representative cases.
 - [x] Uncertainty map for at least 3 representative cases.
 - [x] Synthetic sample panel generated from VAE.
@@ -195,6 +195,9 @@ Add final values from generated files under `results/metrics/`.
 
 Current qualitative artifact paths (smoke-v2):
 
+- `results/predictions/smoke_v2/overlay_BraTS-GLI-00000-000.png`
+- `results/predictions/smoke_v2/overlay_BraTS-GLI-00001-000.png`
+- `results/predictions/smoke_v2/overlay_BraTS-GLI-00001-001.png`
 - `results/xai/smoke_v2/gradcam_overlay.png`
 - `results/xai/smoke_v2/BraTS-GLI-00001-000/gradcam_overlay.png`
 - `results/xai/smoke_v2/BraTS-GLI-00001-001/gradcam_overlay.png`

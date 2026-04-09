@@ -20,9 +20,9 @@
 
 ## Qualitative Findings
 
-- Case 1 (`BraTS-GLI-00000-000`): Grad-CAM and uncertainty maps were generated successfully from the smoke-v2 checkpoint.
-- Case 2 (`BraTS-GLI-00001-000`): Grad-CAM, SHAP, and uncertainty artifacts generated with CPU-bounded settings.
-- Case 3 (`BraTS-GLI-00001-001`): Grad-CAM, SHAP, and uncertainty artifacts generated with CPU-bounded settings.
+- Case 1 (`BraTS-GLI-00000-000`): segmentation overlay, Grad-CAM, and uncertainty maps were generated successfully from CPU checkpoints.
+- Case 2 (`BraTS-GLI-00001-000`): segmentation overlay, Grad-CAM, SHAP, and uncertainty artifacts generated with CPU-bounded settings.
+- Case 3 (`BraTS-GLI-00001-001`): segmentation overlay, Grad-CAM, SHAP, and uncertainty artifacts generated with CPU-bounded settings.
 
 ## Explainability Findings
 
