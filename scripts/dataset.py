@@ -45,7 +45,11 @@ def split_cases(items: list[dict[str, str]], val_ratio: float = 0.2):
     return items[:split_idx], items[split_idx:]
 
 
-def build_transforms(pixdim: Iterable[float] = (1.0, 1.0, 1.0)):
+def build_transforms(
+    pixdim: Iterable[float] = (1.0, 1.0, 1.0),
+    spatial_size: tuple[int, int, int] = (128, 128, 128),
+    num_samples: int = 2,
+):
     train = Compose(
         [
             LoadImaged(keys=["image", "label"]),
@@ -56,10 +60,10 @@ def build_transforms(pixdim: Iterable[float] = (1.0, 1.0, 1.0)):
             RandCropByPosNegLabeld(
                 keys=["image", "label"],
                 label_key="label",
-                spatial_size=(128, 128, 128),
+                spatial_size=spatial_size,
                 pos=1,
                 neg=1,
-                num_samples=2,
+                num_samples=num_samples,
                 image_key="image",
                 image_threshold=0,
             ),
@@ -90,14 +94,22 @@ def get_dataloaders(
     batch_size: int = 1,
     num_workers: int = 4,
     cache_rate: float = 0.1,
+    val_ratio: float = 0.2,
+    case_limit: int = 0,
+    spatial_size: tuple[int, int, int] = (128, 128, 128),
+    num_samples: int = 2,
 ):
     root = Path(data_dir)
     cases = _find_cases(root)
+
+    if case_limit > 0:
+        cases = cases[:case_limit]
+
     if len(cases) < 2:
         raise ValueError("Expected at least 2 cases. Verify BraTS files are under data_dir.")
 
-    train_cases, val_cases = split_cases(cases)
-    train_tf, val_tf = build_transforms()
+    train_cases, val_cases = split_cases(cases, val_ratio=val_ratio)
+    train_tf, val_tf = build_transforms(spatial_size=spatial_size, num_samples=num_samples)
 
     train_ds = CacheDataset(data=train_cases, transform=train_tf, cache_rate=cache_rate)
     val_ds = Dataset(data=val_cases, transform=val_tf)
