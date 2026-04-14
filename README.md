@@ -38,36 +38,47 @@ See `data/README.md` for details.
 
 ```text
 xai-gen-brats/
+├── checkpoints/
 ├── data/
 │   └── README.md
-├── models/
-│   ├── __init__.py
-│   └── segmentation.py
-├── xai/
-│   ├── __init__.py
-│   ├── gradcam.py
-│   └── modality_shap.py
+├── docs/
+│   ├── experiment_log.md
+│   ├── insights_report.md
+│   ├── research_summary.md
+│   ├── research_summary.pdf
+│   └── runbook.md
 ├── generation/
 │   ├── __init__.py
 │   └── vae.py
-├── scripts/
-│   ├── dataset.py
-│   ├── train_segmentation.py
-│   ├── evaluate.py
-│   ├── run_xai.py
-│   ├── uncertainty.py
-│   ├── train_vae.py
-│   └── generate_samples.py
+├── models/
+│   ├── __init__.py
+│   └── segmentation.py
 ├── notebooks/
 │   └── project_walkthrough.ipynb
-├── docs/
-│   ├── research_summary.md
-│   └── research_summary.pdf
+├── results/
+│   ├── metrics/
+│   ├── predictions/
+│   ├── tables/
+│   ├── uncertainty/
+│   └── xai/
+├── scripts/
+│   ├── dataset.py
+│   ├── download_brats.py
+│   ├── evaluate.py
+│   ├── generate_samples.py
+│   ├── predict_overlay.py
+│   ├── run_xai.py
+│   ├── train_segmentation.py
+│   ├── train_vae.py
+│   └── uncertainty.py
 ├── assets/
 │   ├── example_prediction.svg
 │   ├── gradcam_overlay.svg
 │   └── uncertainty_map.svg
-├── results/
+├── xai/
+│   ├── __init__.py
+│   ├── gradcam.py
+│   └── modality_shap.py
 ├── requirements.txt
 └── README.md
 ```
@@ -111,13 +122,13 @@ For end-to-end execution and documentation workflow, use:
 Train baseline model:
 
 ```bash
-python scripts/train_segmentation.py --data-dir data/processed/BraTS2023 --model unet --epochs 50
+python scripts/train_segmentation.py --data-dir data/processed/BraTS2023 --model unet --epochs 50 --quiet-warnings
 ```
 
 Evaluate metrics (Dice, HD95, ECE):
 
 ```bash
-python scripts/evaluate.py --data-dir data/processed/BraTS2023 --checkpoint checkpoints/best_model.pt
+python -m scripts.evaluate --data-dir data/processed/BraTS2023 --checkpoint checkpoints/best_model.pt --quiet-warnings
 ```
 
 ## Phase 2: Explainability + Uncertainty
@@ -188,10 +199,10 @@ Add final values from generated files under `results/metrics/`.
 
 ### Key Insights (Replace With Project Findings)
 
-1. Which tumor sub-region achieves highest and lowest Dice, and why.
-2. Whether Grad-CAM aligns with lesion regions or reveals spurious focus.
-3. Whether uncertainty peaks correlate with boundary errors.
-4. Whether synthetic augmentation improves minority-region performance.
+1. Across current CPU runs, TC has the highest Dice and ET the lowest (for long v1: ET=0.0032, TC=0.3188, WT=0.0498), indicating core-region learning is stronger than enhancing-tumor delineation under bounded training.
+2. Grad-CAM overlays were successfully generated for three representative cases and are qualitatively centered around lesion regions in those examples.
+3. Uncertainty maps for the same three cases show elevated variance near tumor boundaries, consistent with expected boundary ambiguity.
+4. Synthetic samples were generated successfully from the VAE, but segmentation A/B with synthetic augmentation has not yet been executed, so performance impact is still pending.
 
 Current qualitative artifact paths (smoke-v2):
 
