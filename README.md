@@ -23,7 +23,7 @@ This repository focuses on a high-impact clinical AI task: multi-modal brain tum
 
 BraTS 2023 (public benchmark) is used as the core dataset.
 
-- Kaggle and Hugging Face distributions are both acceptable.
+- Official BraTS 2023 challenge distribution is on Synapse; Kaggle/Hugging Face mirrors and manually prepared case folders are also accepted if they match required file naming.
 - Place case folders under `data/processed/BraTS2023/`.
 - Each case folder should include:
 	- `*_t1.nii.gz`
@@ -173,10 +173,10 @@ Add final values from generated files under `results/metrics/`.
 
 | Experiment Setting | Dice Mean | Dice ET | Dice TC | Dice WT | HD95 Mean | ECE | Notes |
 |---|---:|---:|---:|---:|---:|---:|---|
-| Baseline UNet (CPU smoke) | 0.0891 | - | - | - | 100.7852 | 0.0688 | case-limit=16, max-train-batches=5, max-val-batches=2 |
-| Baseline UNet (CPU medium) | 0.0525 | - | - | - | 94.1585 | 0.5455 | case-limit=32, epochs=2, max-train-batches=20, max-val-batches=6 |
-| Baseline UNet (CPU long v1) | 0.1240 | - | - | - | 91.6189 | 0.3570 | case-limit=64, epochs=5, max-train-batches=40, max-val-batches=10 |
-| Baseline + Uncertainty Analysis | 0.0891 | - | - | - | 100.7852 | 0.0688 | uncertainty maps generated for 3 cases under `results/uncertainty/smoke_v2/` |
+| Baseline UNet (CPU smoke) | 0.0891 | 0.0287 | 0.0155 | 0.0817 | 100.7852 | 0.0566 | case-limit=16, max-train-batches=5, max-val-batches=2 |
+| Baseline UNet (CPU medium) | 0.0525 | 0.0158 | 0.1165 | 0.0250 | 94.1585 | 0.5455 | case-limit=32, epochs=2, max-train-batches=20, max-val-batches=6 |
+| Baseline UNet (CPU long v1) | 0.1240 | 0.0032 | 0.3188 | 0.0498 | 91.6189 | 0.3570 | case-limit=64, epochs=5, max-train-batches=40, max-val-batches=10 |
+| Baseline + Uncertainty Analysis | 0.0891 | 0.0287 | 0.0155 | 0.0817 | 100.7852 | 0.0566 | uncertainty maps generated for 3 cases under `results/uncertainty/smoke_v2/` |
 | Baseline + Synthetic Augmentation |  |  |  |  |  |  | VAE trained on CPU (2 epochs), synthetic panels generated in `results/generated_smoke_v2/` |
 
 ### Qualitative Evidence Checklist
@@ -233,14 +233,14 @@ These estimates are practical planning ranges for this codebase and current prep
 
 ## Reproducibility Checklist
 
-- [ ] Dataset source and version are documented.
-- [ ] Train/validation split details are documented.
-- [ ] Environment versions are logged.
-- [ ] Random seeds are fixed and recorded.
-- [ ] Commands for each run are logged.
-- [ ] Metrics are saved as machine-readable files.
-- [ ] Figures in README point to generated files in `results/`.
-- [ ] Commit hash used for final results is recorded.
+- [x] Dataset source and version are documented.
+- [x] Train/validation split details are documented.
+- [x] Environment versions are logged.
+- [x] Random seeds are fixed and recorded.
+- [x] Commands for each run are logged.
+- [x] Metrics are saved as machine-readable files.
+- [x] Figures in README point to generated files in `results/`.
+- [x] Commit hash used for final results is recorded.
 
 ## Research Comparison Angle
 

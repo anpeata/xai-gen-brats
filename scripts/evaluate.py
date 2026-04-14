@@ -2,7 +2,13 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
+import random
+import warnings
 from pathlib import Path
+
+os.environ.setdefault("TF_CPP_MIN_LOG_LEVEL", "2")
+warnings.filterwarnings("ignore", message="Protobuf gencode version", category=UserWarning)
 
 import numpy as np
 import torch
@@ -11,6 +17,17 @@ from monai.metrics import DiceMetric, HausdorffDistanceMetric
 
 from models.segmentation import create_segmentation_model
 from scripts.dataset import get_dataloaders
+
+
+CLASS_NAMES = ["ET", "TC", "WT"]
+
+
+def set_global_seed(seed: int):
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
 
 
 def to_onehot_tensor(labels: torch.Tensor, num_classes: int) -> torch.Tensor:
@@ -28,9 +45,13 @@ def parse_args():
     p.add_argument("--device", type=str, default="cuda" if torch.cuda.is_available() else "cpu")
     p.add_argument("--out", type=str, default="results/metrics.json")
     p.add_argument("--num-workers", type=int, default=4)
+    p.add_argument("--val-ratio", type=float, default=0.2)
+    p.add_argument("--split-seed", type=int, default=-1)
+    p.add_argument("--seed", type=int, default=42)
     p.add_argument("--case-limit", type=int, default=0)
     p.add_argument("--max-val-batches", type=int, default=0)
     p.add_argument("--spatial-size", type=int, default=128)
+    p.add_argument("--quiet-warnings", action="store_true")
     return p.parse_args()
 
 
@@ -50,12 +71,20 @@ def expected_calibration_error(confidences: np.ndarray, correctness: np.ndarray,
 
 def main():
     args = parse_args()
+    if args.quiet_warnings:
+        warnings.filterwarnings("ignore", category=UserWarning)
+        warnings.filterwarnings("ignore", category=FutureWarning)
+
+    set_global_seed(args.seed)
+    split_seed = None if args.split_seed < 0 else args.split_seed
     device = torch.device(args.device)
 
     _, val_loader, _, n_val = get_dataloaders(
         data_dir=args.data_dir,
         batch_size=1,
         num_workers=args.num_workers,
+        val_ratio=args.val_ratio,
+        split_seed=split_seed,
         case_limit=args.case_limit,
         spatial_size=(args.spatial_size, args.spatial_size, args.spatial_size),
         num_samples=1,
@@ -69,6 +98,8 @@ def main():
 
     dice_metric = DiceMetric(include_background=False, reduction="mean")
     hd95_metric = HausdorffDistanceMetric(include_background=False, percentile=95, reduction="mean")
+    dice_metric_classwise = DiceMetric(include_background=False, reduction="mean_batch")
+    hd95_metric_classwise = HausdorffDistanceMetric(include_background=False, percentile=95, reduction="mean_batch")
 
     confidence_values = []
     correctness_values = []
@@ -93,6 +124,8 @@ def main():
             label_onehot = to_onehot_tensor(labels, num_classes=logits.shape[1])
             dice_metric(y_pred=pred_onehot, y=label_onehot)
             hd95_metric(y_pred=pred_onehot, y=label_onehot)
+            dice_metric_classwise(y_pred=pred_onehot, y=label_onehot)
+            hd95_metric_classwise(y_pred=pred_onehot, y=label_onehot)
 
             conf, pred_cls = torch.max(probs, dim=1)
             true_cls = labels[:, 0, ...].clamp(0, logits.shape[1] - 1)
@@ -103,15 +136,27 @@ def main():
             if args.max_val_batches > 0 and batch_idx >= args.max_val_batches:
                 break
 
+    dice_classwise_values = dice_metric_classwise.aggregate().detach().cpu().numpy().tolist()
+    hd95_classwise_values = hd95_metric_classwise.aggregate().detach().cpu().numpy().tolist()
+
     metrics = {
         "n_validation_cases": n_val,
         "dice_mean": float(dice_metric.aggregate().item()),
         "hd95_mean": float(hd95_metric.aggregate().item()),
+        "dice_classwise": {
+            cls: float(val) for cls, val in zip(CLASS_NAMES, dice_classwise_values)
+        },
+        "hd95_classwise": {
+            cls: float(val) for cls, val in zip(CLASS_NAMES, hd95_classwise_values)
+        },
         "ece": expected_calibration_error(
             np.asarray(confidence_values, dtype=np.float32),
             np.asarray(correctness_values, dtype=np.float32),
             n_bins=15,
         ),
+        "seed": args.seed,
+        "split_seed": split_seed,
+        "val_ratio": args.val_ratio,
     }
 
     out_path = Path(args.out)

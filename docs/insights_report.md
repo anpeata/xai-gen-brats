@@ -2,7 +2,7 @@
 
 ## Experimental Setup
 
-- Data split: Random case-level split (`val_ratio=0.2`) on `data/processed/BraTS2023`.
+- Data split: Deterministic case-level split (`val_ratio=0.2`) on `data/processed/BraTS2023` using sorted case order (`split_seed=null` / no shuffle).
 - Preprocessing: Load four modalities, channel-first, intensity normalization (`nonzero=True`, `channel_wise=True`), training random crop (`96^3`, smoke run with `num_samples=1`).
 - Model: MONAI 3D UNet (`in_channels=4`, `out_channels=4`) trained for CPU smoke validation.
 - Optimizer and schedule: Adam (`lr=1e-3`), no scheduler in smoke run.
@@ -12,10 +12,10 @@
 
 | Setting | Dice Mean | Dice ET | Dice TC | Dice WT | HD95 Mean | ECE |
 |---|---:|---:|---:|---:|---:|---:|
-| Baseline segmentation | 0.0891 | - | - | - | 100.7852 | 0.0688 |
-| Baseline segmentation (CPU medium) | 0.0525 | - | - | - | 94.1585 | 0.5455 |
-| Baseline segmentation (CPU long v1) | 0.1240 | - | - | - | 91.6189 | 0.3570 |
-| Baseline + uncertainty analysis | 0.0891 | - | - | - | 100.7852 | 0.0688 |
+| Baseline segmentation | 0.0891 | 0.0287 | 0.0155 | 0.0817 | 100.7852 | 0.0566 |
+| Baseline segmentation (CPU medium) | 0.0525 | 0.0158 | 0.1165 | 0.0250 | 94.1585 | 0.5455 |
+| Baseline segmentation (CPU long v1) | 0.1240 | 0.0032 | 0.3188 | 0.0498 | 91.6189 | 0.3570 |
+| Baseline + uncertainty analysis | 0.0891 | 0.0287 | 0.0155 | 0.0817 | 100.7852 | 0.0566 |
 | Baseline + synthetic augmentation |  |  |  |  |  |  |
 
 ## Qualitative Findings

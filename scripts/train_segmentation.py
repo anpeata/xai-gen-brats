@@ -1,8 +1,12 @@
 from __future__ import annotations
 
 import argparse
+import os
+import random
+import warnings
 from pathlib import Path
 
+import numpy as np
 import torch
 from monai.inferers import sliding_window_inference
 from monai.losses import DiceCELoss
@@ -11,6 +15,17 @@ from tqdm import tqdm
 
 from models.segmentation import create_segmentation_model
 from scripts.dataset import get_dataloaders
+
+os.environ.setdefault("TF_CPP_MIN_LOG_LEVEL", "2")
+warnings.filterwarnings("ignore", message="Protobuf gencode version", category=UserWarning)
+
+
+def set_global_seed(seed: int):
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
 
 
 def to_onehot_tensor(labels: torch.Tensor, num_classes: int) -> torch.Tensor:
@@ -32,18 +47,27 @@ def parse_args():
     p.add_argument("--device", type=str, default="cuda" if torch.cuda.is_available() else "cpu")
     p.add_argument("--cache-rate", type=float, default=0.1)
     p.add_argument("--val-ratio", type=float, default=0.2)
+    p.add_argument("--split-seed", type=int, default=-1)
+    p.add_argument("--seed", type=int, default=42)
     p.add_argument("--case-limit", type=int, default=0)
     p.add_argument("--spatial-size", type=int, default=128)
     p.add_argument("--num-samples", type=int, default=2)
     p.add_argument("--max-train-batches", type=int, default=0)
     p.add_argument("--max-val-batches", type=int, default=0)
     p.add_argument("--quick-cpu", action="store_true")
+    p.add_argument("--quiet-warnings", action="store_true")
     p.add_argument("--out", type=str, default="checkpoints/best_model.pt")
     return p.parse_args()
 
 
 def main():
     args = parse_args()
+    if args.quiet_warnings:
+        warnings.filterwarnings("ignore", category=UserWarning)
+        warnings.filterwarnings("ignore", category=FutureWarning)
+
+    set_global_seed(args.seed)
+    split_seed = None if args.split_seed < 0 else args.split_seed
 
     # Fast smoke-test profile for CPU-only environments.
     if args.quick_cpu:
@@ -71,6 +95,7 @@ def main():
         num_workers=args.num_workers,
         cache_rate=args.cache_rate,
         val_ratio=args.val_ratio,
+        split_seed=split_seed,
         case_limit=args.case_limit,
         spatial_size=spatial_size,
         num_samples=args.num_samples,
@@ -79,7 +104,8 @@ def main():
     print(
         "Run config: "
         f"spatial_size={spatial_size}, num_samples={args.num_samples}, "
-        f"max_train_batches={args.max_train_batches}, max_val_batches={args.max_val_batches}"
+        f"max_train_batches={args.max_train_batches}, max_val_batches={args.max_val_batches}, "
+        f"seed={args.seed}, split_seed={split_seed}"
     )
 
     model = create_segmentation_model(args.model).to(device)
@@ -95,6 +121,7 @@ def main():
     for epoch in range(1, args.epochs + 1):
         model.train()
         epoch_loss = 0.0
+        n_train_batches = 0
         progress = tqdm(train_loader, desc=f"Epoch {epoch}/{args.epochs}")
         for batch_idx, batch in enumerate(progress, start=1):
             images = batch["image"].to(device)
@@ -110,12 +137,13 @@ def main():
             optimizer.step()
 
             epoch_loss += loss.item()
+            n_train_batches += 1
             progress.set_postfix({"loss": f"{loss.item():.4f}"})
 
             if args.max_train_batches > 0 and batch_idx >= args.max_train_batches:
                 break
 
-        avg_loss = epoch_loss / max(1, len(train_loader))
+        avg_loss = epoch_loss / max(1, n_train_batches)
 
         model.eval()
         dice_metric.reset()

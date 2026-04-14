@@ -1,0 +1,10 @@
+setting,class,dice,hd95
+baseline_unet_cpu_smoke,ET,0.028662,125.115944
+baseline_unet_cpu_smoke,TC,0.015498,120.124931
+baseline_unet_cpu_smoke,WT,0.081742,105.850067
+baseline_unet_cpu_medium,ET,0.015841,104.727669
+baseline_unet_cpu_medium,TC,0.116548,78.641045
+baseline_unet_cpu_medium,WT,0.024966,99.106781
+baseline_unet_cpu_long_v1,ET,0.003194,111.156944
+baseline_unet_cpu_long_v1,TC,0.318842,74.887131
+baseline_unet_cpu_long_v1,WT,0.049840,88.812515

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import random
 from pathlib import Path
 from typing import Iterable
 
@@ -40,9 +41,13 @@ def _find_cases(data_dir: Path) -> list[dict[str, str]]:
     return cases
 
 
-def split_cases(items: list[dict[str, str]], val_ratio: float = 0.2):
-    split_idx = int(len(items) * (1 - val_ratio))
-    return items[:split_idx], items[split_idx:]
+def split_cases(items: list[dict[str, str]], val_ratio: float = 0.2, split_seed: int | None = None):
+    ordered = list(items)
+    if split_seed is not None:
+        random.Random(split_seed).shuffle(ordered)
+
+    split_idx = int(len(ordered) * (1 - val_ratio))
+    return ordered[:split_idx], ordered[split_idx:]
 
 
 def build_transforms(
@@ -95,6 +100,7 @@ def get_dataloaders(
     num_workers: int = 4,
     cache_rate: float = 0.1,
     val_ratio: float = 0.2,
+    split_seed: int | None = None,
     case_limit: int = 0,
     spatial_size: tuple[int, int, int] = (128, 128, 128),
     num_samples: int = 2,
@@ -108,7 +114,7 @@ def get_dataloaders(
     if len(cases) < 2:
         raise ValueError("Expected at least 2 cases. Verify BraTS files are under data_dir.")
 
-    train_cases, val_cases = split_cases(cases, val_ratio=val_ratio)
+    train_cases, val_cases = split_cases(cases, val_ratio=val_ratio, split_seed=split_seed)
     train_tf, val_tf = build_transforms(spatial_size=spatial_size, num_samples=num_samples)
 
     train_ds = CacheDataset(data=train_cases, transform=train_tf, cache_rate=cache_rate)

@@ -1,0 +1,6 @@
+setting,dice_mean,hd95_mean,ece,dice_et,dice_tc,dice_wt,notes
+baseline_unet_cpu_smoke,0.089088,100.785187,0.056559,0.028662,0.015498,0.081742,"case_limit=16,max_train_batches=5,max_val_batches=2"
+baseline_unet_cpu_medium,0.052451,94.158501,0.545533,0.015841,0.116548,0.024966,"case_limit=32,epochs=2,max_train_batches=20,max_val_batches=6"
+baseline_unet_cpu_long_v1,0.123959,91.618858,0.357044,0.003194,0.318842,0.049840,"case_limit=64,epochs=5,max_train_batches=40,max_val_batches=10"
+baseline_plus_uncertainty_smoke,0.089088,100.785187,0.056559,0.028662,0.015498,0.081742,"uncertainty maps generated for 3 cases"
+baseline_plus_synthetic_augmentation,,,,,,,"vae trained and synthetic samples generated; segmentation A/B still pending"

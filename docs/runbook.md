@@ -14,6 +14,10 @@ This runbook helps generate real evidence quickly and consistently.
 2. Use the dataset preparation script to normalize file layout.
 3. Verify each prepared case has T1, T1ce, T2, FLAIR, and segmentation mask.
 
+Official source note:
+- The BraTS 2023 challenge data is officially hosted on Synapse.
+- Kaggle and Hugging Face options are practical mirrors/community-hosted copies and should be validated against expected naming and modalities.
+
 Option A: Kaggle API
 - Configure Kaggle credentials (`~/.kaggle/kaggle.json` or environment variables).
 - Download and prepare:
@@ -46,13 +50,13 @@ Quick verification command:
 ## Step 3: Baseline segmentation
 
 CPU smoke-test command (recommended before full training):
-- `python scripts/train_segmentation.py --data-dir data/processed/BraTS2023 --quick-cpu --device cpu --out checkpoints/best_model_cpu_smoke.pt`
+- `python scripts/train_segmentation.py --data-dir data/processed/BraTS2023 --quick-cpu --device cpu --out checkpoints/best_model_cpu_smoke.pt --quiet-warnings`
 
 Run:
 - `python scripts/train_segmentation.py --data-dir data/processed/BraTS2023 --model unet --epochs 50`
 
 Then evaluate:
-- `python scripts/evaluate.py --data-dir data/processed/BraTS2023 --checkpoint checkpoints/best_model.pt --out results/metrics/baseline_metrics.json`
+- `python scripts/evaluate.py --data-dir data/processed/BraTS2023 --checkpoint checkpoints/best_model.pt --out results/metrics/baseline_metrics.json --quiet-warnings`
 
 ## Step 4: XAI and uncertainty
 

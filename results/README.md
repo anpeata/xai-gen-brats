@@ -21,9 +21,14 @@ Use this folder for real outputs produced by experiments.
 
 ## Minimum Evidence Checklist
 
-- [ ] Baseline metrics available.
-- [ ] Class-wise Dice reported.
-- [ ] HD95 and ECE reported.
+- [x] Baseline metrics available.
+- [x] Class-wise Dice reported.
+- [x] HD95 and ECE reported.
 - [ ] At least 3 representative figures included.
-- [ ] One ablation table included.
+- [x] One ablation table included.
 - [ ] Insights summarized in `docs/insights_report.md`.
+
+Current machine-readable artifacts:
+
+- `results/tables/ablation_summary.csv`
+- `results/tables/classwise_metrics.csv`
