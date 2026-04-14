@@ -6,6 +6,9 @@ import random
 import warnings
 from pathlib import Path
 
+os.environ.setdefault("TF_CPP_MIN_LOG_LEVEL", "2")
+warnings.filterwarnings("ignore", message="Protobuf gencode version", category=UserWarning)
+
 import numpy as np
 import torch
 from monai.inferers import sliding_window_inference
@@ -15,9 +18,6 @@ from tqdm import tqdm
 
 from models.segmentation import create_segmentation_model
 from scripts.dataset import get_dataloaders
-
-os.environ.setdefault("TF_CPP_MIN_LOG_LEVEL", "2")
-warnings.filterwarnings("ignore", message="Protobuf gencode version", category=UserWarning)
 
 
 def set_global_seed(seed: int):

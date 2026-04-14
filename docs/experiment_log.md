@@ -30,6 +30,8 @@ Use this file as the primary source of truth for all executed runs.
 | run-012 | Re-eval smoke with class-wise metrics | `python -m scripts.evaluate --data-dir data/processed/BraTS2023 --checkpoint checkpoints/best_model_cpu_smoke_v2.pt --device cpu --out results/metrics/baseline_metrics_smoke_v2.json --num-workers 0 --case-limit 16 --max-val-batches 2 --spatial-size 96 --seed 42 --split-seed -1 --val-ratio 0.2` | - | 4 | deterministic split order, seed=42, split_seed=null | - | 0.0891 | 100.7852 | 0.0566 | ~2-4 min | `results/metrics/baseline_metrics_smoke_v2.json` |
 | run-013 | Re-eval medium with class-wise metrics | `python -m scripts.evaluate --data-dir data/processed/BraTS2023 --checkpoint checkpoints/best_model_cpu_mid.pt --device cpu --out results/metrics/baseline_metrics_cpu_mid.json --num-workers 0 --case-limit 32 --max-val-batches 6 --spatial-size 96 --seed 42 --split-seed -1 --val-ratio 0.2` | - | 7 | deterministic split order, seed=42, split_seed=null | - | 0.0525 | 94.1585 | 0.5455 | ~5-8 min | `results/metrics/baseline_metrics_cpu_mid.json` |
 | run-014 | Re-eval long v1 with class-wise metrics | `python -m scripts.evaluate --data-dir data/processed/BraTS2023 --checkpoint checkpoints/best_model_cpu_long_v1.pt --device cpu --out results/metrics/baseline_metrics_cpu_long_v1.json --num-workers 0 --case-limit 64 --max-val-batches 10 --spatial-size 96 --seed 42 --split-seed -1 --val-ratio 0.2` | - | 13 | deterministic split order, seed=42, split_seed=null | - | 0.1240 | 91.6189 | 0.3570 | ~10-15 min | `results/metrics/baseline_metrics_cpu_long_v1.json` |
+| run-015 | SegResNet bounded training (CPU medium) | `python -m scripts.train_segmentation --data-dir data/processed/BraTS2023 --model segresnet --device cpu --epochs 2 --num-workers 0 --case-limit 32 --spatial-size 96 --num-samples 1 --max-train-batches 20 --max-val-batches 6 --seed 42 --split-seed -1 --out checkpoints/best_model_cpu_mid_segresnet.pt --quiet-warnings` | 25 | 7 | SegResNet, bounded train/val batches | 1* | - | - | - | ~8-12 min | `checkpoints/best_model_cpu_mid_segresnet.pt` |
+| run-016 | SegResNet quick evaluation (CPU medium subset) | `python -m scripts.evaluate --data-dir data/processed/BraTS2023 --checkpoint checkpoints/best_model_cpu_mid_segresnet.pt --device cpu --out results/metrics/baseline_metrics_cpu_mid_segresnet_quick.json --num-workers 0 --case-limit 32 --max-val-batches 2 --spatial-size 96 --seed 42 --split-seed -1 --val-ratio 0.2 --quiet-warnings` | - | 7 | quick screen, eval max-val-batches=2 | - | 0.0009 | 175.0522 | 0.3150 | ~2-4 min | `results/metrics/baseline_metrics_cpu_mid_segresnet_quick.json` |
 
 ## Run Notes
 
@@ -116,3 +118,15 @@ Use this file as the primary source of truth for all executed runs.
 - Result summary: long metric file now includes class-wise fields and reproducibility metadata.
 - Failure modes: runtime was substantially longer than smoke/medium and required asynchronous terminal execution.
 - Fixes applied: none required in model code; completion achieved with the same module-invocation and split-compatible settings.
+
+### run-015
+- Intended change: run a second architecture baseline (SegResNet) under medium bounded CPU settings.
+- Result summary: checkpoint was produced; runtime was significantly slower than UNet with this configuration.
+- Failure modes: initial command form (`python scripts/...`) failed with module import path errors; corrected to module invocation (`python -m ...`).
+- Fixes applied: reran with module invocation and recorded checkpoint artifact.
+
+### run-016
+- Intended change: obtain a quick SegResNet comparison metric without waiting for full bounded validation completion.
+- Result summary: quick-screen metrics generated; SegResNet underperformed UNet in this bounded setup.
+- Failure modes: full `max-val-batches=6` evaluation was too slow for interactive completion.
+- Fixes applied: completed a transparent quick-screen evaluation with `max-val-batches=2` and clearly labeled it as non-final.

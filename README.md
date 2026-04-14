@@ -186,9 +186,10 @@ Add final values from generated files under `results/metrics/`.
 |---|---:|---:|---:|---:|---:|---:|---|
 | Baseline UNet (CPU smoke) | 0.0891 | 0.0287 | 0.0155 | 0.0817 | 100.7852 | 0.0566 | case-limit=16, max-train-batches=5, max-val-batches=2 |
 | Baseline UNet (CPU medium) | 0.0525 | 0.0158 | 0.1165 | 0.0250 | 94.1585 | 0.5455 | case-limit=32, epochs=2, max-train-batches=20, max-val-batches=6 |
+| SegResNet (CPU medium quick-eval) | 0.0009 | 0.0000 | 0.0000 | 0.0028 | 175.0522 | 0.3150 | checkpoint from bounded run, eval max-val-batches=2; quick screening only |
 | Baseline UNet (CPU long v1) | 0.1240 | 0.0032 | 0.3188 | 0.0498 | 91.6189 | 0.3570 | case-limit=64, epochs=5, max-train-batches=40, max-val-batches=10 |
 | Baseline + Uncertainty Analysis | 0.0891 | 0.0287 | 0.0155 | 0.0817 | 100.7852 | 0.0566 | uncertainty maps generated for 3 cases under `results/uncertainty/smoke_v2/` |
-| Baseline + Synthetic Augmentation |  |  |  |  |  |  | VAE trained on CPU (2 epochs), synthetic panels generated in `results/generated_smoke_v2/` |
+| Baseline + Synthetic Augmentation |  |  |  |  |  |  | pending: current VAE outputs are unlabeled 2D panels and cannot be used directly for 3D segmentation supervision |
 
 ### Qualitative Evidence Checklist
 
@@ -202,7 +203,7 @@ Add final values from generated files under `results/metrics/`.
 1. Across current CPU runs, TC has the highest Dice and ET the lowest (for long v1: ET=0.0032, TC=0.3188, WT=0.0498), indicating core-region learning is stronger than enhancing-tumor delineation under bounded training.
 2. Grad-CAM overlays were successfully generated for three representative cases and are qualitatively centered around lesion regions in those examples.
 3. Uncertainty maps for the same three cases show elevated variance near tumor boundaries, consistent with expected boundary ambiguity.
-4. Synthetic samples were generated successfully from the VAE, but segmentation A/B with synthetic augmentation has not yet been executed, so performance impact is still pending.
+4. Synthetic samples were generated successfully from the VAE, but segmentation A/B with synthetic augmentation is still pending because current generated outputs are unlabeled 2D modality panels.
 
 Current qualitative artifact paths (smoke-v2):
 
