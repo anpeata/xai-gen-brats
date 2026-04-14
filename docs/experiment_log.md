@@ -32,6 +32,8 @@ Use this file as the primary source of truth for all executed runs.
 | run-014 | Re-eval long v1 with class-wise metrics | `python -m scripts.evaluate --data-dir data/processed/BraTS2023 --checkpoint checkpoints/best_model_cpu_long_v1.pt --device cpu --out results/metrics/baseline_metrics_cpu_long_v1.json --num-workers 0 --case-limit 64 --max-val-batches 10 --spatial-size 96 --seed 42 --split-seed -1 --val-ratio 0.2` | - | 13 | deterministic split order, seed=42, split_seed=null | - | 0.1240 | 91.6189 | 0.3570 | ~10-15 min | `results/metrics/baseline_metrics_cpu_long_v1.json` |
 | run-015 | SegResNet bounded training (CPU medium) | `python -m scripts.train_segmentation --data-dir data/processed/BraTS2023 --model segresnet --device cpu --epochs 2 --num-workers 0 --case-limit 32 --spatial-size 96 --num-samples 1 --max-train-batches 20 --max-val-batches 6 --seed 42 --split-seed -1 --out checkpoints/best_model_cpu_mid_segresnet.pt --quiet-warnings` | 25 | 7 | SegResNet, bounded train/val batches | 1* | - | - | - | ~8-12 min | `checkpoints/best_model_cpu_mid_segresnet.pt` |
 | run-016 | SegResNet quick evaluation (CPU medium subset) | `python -m scripts.evaluate --data-dir data/processed/BraTS2023 --checkpoint checkpoints/best_model_cpu_mid_segresnet.pt --device cpu --out results/metrics/baseline_metrics_cpu_mid_segresnet_quick.json --num-workers 0 --case-limit 32 --max-val-batches 2 --spatial-size 96 --seed 42 --split-seed -1 --val-ratio 0.2 --quiet-warnings` | - | 7 | quick screen, eval max-val-batches=2 | - | 0.0009 | 175.0522 | 0.3150 | ~2-4 min | `results/metrics/baseline_metrics_cpu_mid_segresnet_quick.json` |
+| run-017 | Generate label-preserving synthetic cases | `python -m scripts.generate_label_preserving_synthetic --source-dir data/processed/BraTS2023 --out-dir data/processed/BraTS2023_SYN --num-synthetic 16 --base-case-limit 32 --seed 42` | - | - | paired flips + intensity transforms, synthetic=16 | - | - | - | - | <1 min | `data/processed/BraTS2023_SYN/*` |
+| run-018 | Baseline + synthetic augmentation training/eval (CPU medium) | `python -m scripts.train_segmentation --data-dir data/processed/BraTS2023 --train-extra-dir data/processed/BraTS2023_SYN --device cpu --epochs 2 --num-workers 0 --case-limit 32 --spatial-size 96 --num-samples 1 --max-train-batches 20 --max-val-batches 6 --seed 42 --split-seed -1 --out checkpoints/best_model_cpu_mid_plus_synth.pt --quiet-warnings` then `python -m scripts.evaluate --data-dir data/processed/BraTS2023 --checkpoint checkpoints/best_model_cpu_mid_plus_synth.pt --device cpu --out results/metrics/baseline_metrics_cpu_mid_plus_synth.json --num-workers 0 --case-limit 32 --max-val-batches 6 --spatial-size 96 --seed 42 --split-seed -1 --val-ratio 0.2 --quiet-warnings` | 41 | 7 | +16 synthetic train-only cases from `BraTS2023_SYN` | 2 | 0.0335 | 121.3415 | 0.4941 | ~4-6 min | `checkpoints/best_model_cpu_mid_plus_synth.pt`, `results/metrics/baseline_metrics_cpu_mid_plus_synth.json` |
 
 ## Run Notes
 
@@ -130,3 +132,15 @@ Use this file as the primary source of truth for all executed runs.
 - Result summary: quick-screen metrics generated; SegResNet underperformed UNet in this bounded setup.
 - Failure modes: full `max-val-batches=6` evaluation was too slow for interactive completion.
 - Fixes applied: completed a transparent quick-screen evaluation with `max-val-batches=2` and clearly labeled it as non-final.
+
+### run-017
+- Intended change: create trainable synthetic data with labels preserved for a real augmentation A/B.
+- Result summary: 16 synthetic cases generated from first 32 base cases under `data/processed/BraTS2023_SYN`.
+- Failure modes: none observed.
+- Fixes applied: not required.
+
+### run-018
+- Intended change: run a true baseline+synthetic augmentation experiment with synthetic data added to training only.
+- Result summary: experiment completed; compared with baseline medium, Dice decreased (0.0335 vs 0.0525) and HD95 worsened.
+- Failure modes: none blocking after adding `--train-extra-dir` support.
+- Fixes applied: implemented train-only extra directory loading in `scripts/dataset.py` and `scripts/train_segmentation.py`.

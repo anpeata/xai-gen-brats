@@ -189,7 +189,7 @@ Add final values from generated files under `results/metrics/`.
 | SegResNet (CPU medium quick-eval) | 0.0009 | 0.0000 | 0.0000 | 0.0028 | 175.0522 | 0.3150 | checkpoint from bounded run, eval max-val-batches=2; quick screening only |
 | Baseline UNet (CPU long v1) | 0.1240 | 0.0032 | 0.3188 | 0.0498 | 91.6189 | 0.3570 | case-limit=64, epochs=5, max-train-batches=40, max-val-batches=10 |
 | Baseline + Uncertainty Analysis | 0.0891 | 0.0287 | 0.0155 | 0.0817 | 100.7852 | 0.0566 | uncertainty maps generated for 3 cases under `results/uncertainty/smoke_v2/` |
-| Baseline + Synthetic Augmentation |  |  |  |  |  |  | pending: current VAE outputs are unlabeled 2D panels and cannot be used directly for 3D segmentation supervision |
+| Baseline + Synthetic Augmentation (label-preserving) | 0.0335 | 0.0147 | 0.0707 | 0.0150 | 121.3415 | 0.4941 | train-extra-dir=`data/processed/BraTS2023_SYN`, 16 synthetic labeled cases, same medium bounded run config |
 
 ### Qualitative Evidence Checklist
 
@@ -203,7 +203,7 @@ Add final values from generated files under `results/metrics/`.
 1. Across current CPU runs, TC has the highest Dice and ET the lowest (for long v1: ET=0.0032, TC=0.3188, WT=0.0498), indicating core-region learning is stronger than enhancing-tumor delineation under bounded training.
 2. Grad-CAM overlays were successfully generated for three representative cases and are qualitatively centered around lesion regions in those examples.
 3. Uncertainty maps for the same three cases show elevated variance near tumor boundaries, consistent with expected boundary ambiguity.
-4. Synthetic samples were generated successfully from the VAE, but segmentation A/B with synthetic augmentation is still pending because current generated outputs are unlabeled 2D modality panels.
+4. Label-preserving synthetic augmentation (41 train cases total with 16 synthetic additions) under the bounded medium setup reduced Dice versus baseline medium (0.0335 vs 0.0525), suggesting the current synthetic generation recipe needs refinement.
 
 Current qualitative artifact paths (smoke-v2):
 

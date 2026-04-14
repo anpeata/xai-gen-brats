@@ -74,6 +74,17 @@ Train VAE:
 Generate samples:
 - `python scripts/generate_samples.py --checkpoint checkpoints/vae.pt --n 8 --out-dir results/figures`
 
+## Step 5b: Label-preserving synthetic augmentation (trainable)
+
+Generate labeled synthetic cases:
+- `python -m scripts.generate_label_preserving_synthetic --source-dir data/processed/BraTS2023 --out-dir data/processed/BraTS2023_SYN --num-synthetic 16 --base-case-limit 32 --seed 42`
+
+Train segmentation with synthetic train-only additions:
+- `python -m scripts.train_segmentation --data-dir data/processed/BraTS2023 --train-extra-dir data/processed/BraTS2023_SYN --device cpu --epochs 2 --num-workers 0 --case-limit 32 --spatial-size 96 --num-samples 1 --max-train-batches 20 --max-val-batches 6 --seed 42 --split-seed -1 --out checkpoints/best_model_cpu_mid_plus_synth.pt --quiet-warnings`
+
+Evaluate augmented checkpoint:
+- `python -m scripts.evaluate --data-dir data/processed/BraTS2023 --checkpoint checkpoints/best_model_cpu_mid_plus_synth.pt --device cpu --out results/metrics/baseline_metrics_cpu_mid_plus_synth.json --num-workers 0 --case-limit 32 --max-val-batches 6 --spatial-size 96 --seed 42 --split-seed -1 --val-ratio 0.2 --quiet-warnings`
+
 ## Step 6: Fill logs and reports
 
 1. Copy `docs/experiment_log_template.md` to `docs/experiment_log.md` and fill all fields.

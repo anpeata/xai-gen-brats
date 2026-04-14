@@ -50,6 +50,8 @@ def parse_args():
     p.add_argument("--split-seed", type=int, default=-1)
     p.add_argument("--seed", type=int, default=42)
     p.add_argument("--case-limit", type=int, default=0)
+    p.add_argument("--train-extra-dir", action="append", default=[])
+    p.add_argument("--train-extra-case-limit", type=int, default=0)
     p.add_argument("--spatial-size", type=int, default=128)
     p.add_argument("--num-samples", type=int, default=2)
     p.add_argument("--max-train-batches", type=int, default=0)
@@ -97,6 +99,8 @@ def main():
         val_ratio=args.val_ratio,
         split_seed=split_seed,
         case_limit=args.case_limit,
+        train_extra_dirs=args.train_extra_dir,
+        train_extra_case_limit=args.train_extra_case_limit,
         spatial_size=spatial_size,
         num_samples=args.num_samples,
     )
@@ -105,7 +109,7 @@ def main():
         "Run config: "
         f"spatial_size={spatial_size}, num_samples={args.num_samples}, "
         f"max_train_batches={args.max_train_batches}, max_val_batches={args.max_val_batches}, "
-        f"seed={args.seed}, split_seed={split_seed}"
+        f"seed={args.seed}, split_seed={split_seed}, train_extra_dirs={args.train_extra_dir}"
     )
 
     model = create_segmentation_model(args.model).to(device)

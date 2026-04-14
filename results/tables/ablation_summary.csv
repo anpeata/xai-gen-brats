@@ -4,4 +4,4 @@ baseline_unet_cpu_medium,0.052451,94.158501,0.545533,0.015841,0.116548,0.024966,
 baseline_segresnet_cpu_medium_quick_eval,0.000919,175.052216,0.314996,0.000000,0.000000,0.002758,"training bounded, eval max_val_batches=2 for quick screening"
 baseline_unet_cpu_long_v1,0.123959,91.618858,0.357044,0.003194,0.318842,0.049840,"case_limit=64,epochs=5,max_train_batches=40,max_val_batches=10"
 baseline_plus_uncertainty_smoke,0.089088,100.785187,0.056559,0.028662,0.015498,0.081742,"uncertainty maps generated for 3 cases"
-baseline_plus_synthetic_augmentation,,,,,,,"vae trained and synthetic samples generated; segmentation A/B still pending"
+baseline_plus_synthetic_label_preserving_cpu_medium,0.033469,121.341454,0.494102,0.014696,0.070667,0.015043,"train_extra_dir=data/processed/BraTS2023_SYN,num_synthetic=16"

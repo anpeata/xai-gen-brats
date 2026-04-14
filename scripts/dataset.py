@@ -102,6 +102,8 @@ def get_dataloaders(
     val_ratio: float = 0.2,
     split_seed: int | None = None,
     case_limit: int = 0,
+    train_extra_dirs: list[str] | None = None,
+    train_extra_case_limit: int = 0,
     spatial_size: tuple[int, int, int] = (128, 128, 128),
     num_samples: int = 2,
 ):
@@ -115,6 +117,15 @@ def get_dataloaders(
         raise ValueError("Expected at least 2 cases. Verify BraTS files are under data_dir.")
 
     train_cases, val_cases = split_cases(cases, val_ratio=val_ratio, split_seed=split_seed)
+
+    # Optional train-only augmentation pool (for example, label-preserving synthetic cases).
+    if train_extra_dirs:
+        for extra_dir in train_extra_dirs:
+            extra_cases = _find_cases(Path(extra_dir))
+            if train_extra_case_limit > 0:
+                extra_cases = extra_cases[:train_extra_case_limit]
+            train_cases.extend(extra_cases)
+
     train_tf, val_tf = build_transforms(spatial_size=spatial_size, num_samples=num_samples)
 
     train_ds = CacheDataset(data=train_cases, transform=train_tf, cache_rate=cache_rate)

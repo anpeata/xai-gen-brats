@@ -17,7 +17,7 @@
 | SegResNet (CPU medium quick-eval) | 0.0009 | 0.0000 | 0.0000 | 0.0028 | 175.0522 | 0.3150 |
 | Baseline segmentation (CPU long v1) | 0.1240 | 0.0032 | 0.3188 | 0.0498 | 91.6189 | 0.3570 |
 | Baseline + uncertainty analysis | 0.0891 | 0.0287 | 0.0155 | 0.0817 | 100.7852 | 0.0566 |
-| Baseline + synthetic augmentation |  |  |  |  |  |  |
+| Baseline + synthetic augmentation (label-preserving) | 0.0335 | 0.0147 | 0.0707 | 0.0150 | 121.3415 | 0.4941 |
 
 ## Qualitative Findings
 
@@ -38,7 +38,7 @@
 ## Synthetic Data Findings
 
 - Sample realism: 8 synthetic panels were generated from the 2-epoch CPU VAE checkpoint (`results/generated_smoke_v2/`), with coherent multi-modal structure and expected blur for early-stage training.
-- Performance impact: not yet measured; synthetic-to-real augmentation experiment is pending because current generated outputs are unlabeled 2D panels.
+- Performance impact: measured with label-preserving synthetic cases; under this bounded CPU setup, augmentation reduced Dice and worsened HD95 versus the baseline medium run.
 
 ## Conclusions
 
