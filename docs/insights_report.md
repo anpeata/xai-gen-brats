@@ -39,6 +39,7 @@
 
 - Sample realism: 8 synthetic panels were generated from the 2-epoch CPU VAE checkpoint (`results/generated_smoke_v2/`), with coherent multi-modal structure and expected blur for early-stage training.
 - Performance impact: measured with label-preserving synthetic cases; under this bounded CPU setup, augmentation reduced Dice and worsened HD95 versus the baseline medium run.
+- Multi-seed medium check: a 3-seed medium A/B (`seed=42,43,44`, 2 epochs, 20 train batches, 6 val batches) showed mean `delta_dice=-0.001367`, mean `delta_hd95=+2.750`, and mean `delta_ece=-0.005809`, indicating no segmentation-quality gain from the current synthetic recipe.
 - Multi-seed quick check: a 3-seed quick A/B (`seed=42,43,44`) showed near-parity overall (`mean delta_dice=-0.000115`, `mean delta_hd95=-0.361`, `mean delta_ece=+0.0019`), indicating no reliable gain at current synthetic recipe strength.
 
 ## Conclusions
