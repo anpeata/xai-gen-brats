@@ -204,6 +204,7 @@ Add final values from generated files under `results/metrics/`.
 2. Grad-CAM overlays were successfully generated for three representative cases and are qualitatively centered around lesion regions in those examples.
 3. Uncertainty maps for the same three cases show elevated variance near tumor boundaries, consistent with expected boundary ambiguity.
 4. Label-preserving synthetic augmentation (41 train cases total with 16 synthetic additions) under the bounded medium setup reduced Dice versus baseline medium (0.0335 vs 0.0525), suggesting the current synthetic generation recipe needs refinement.
+5. Quick 3-seed A/B (`seed=42,43,44`, 1 epoch, 10 train batches, 3 val batches) showed near-parity overall with a slight mean Dice decrease for synthetic augmentation (`delta_dice=-0.000115`) and slight mean HD95 improvement (`delta_hd95=-0.361`); see `results/tables/seed_ablation_quick_summary.csv`.
 
 Current qualitative artifact paths (smoke-v2):
 

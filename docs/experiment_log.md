@@ -34,6 +34,7 @@ Use this file as the primary source of truth for all executed runs.
 | run-016 | SegResNet quick evaluation (CPU medium subset) | `python -m scripts.evaluate --data-dir data/processed/BraTS2023 --checkpoint checkpoints/best_model_cpu_mid_segresnet.pt --device cpu --out results/metrics/baseline_metrics_cpu_mid_segresnet_quick.json --num-workers 0 --case-limit 32 --max-val-batches 2 --spatial-size 96 --seed 42 --split-seed -1 --val-ratio 0.2 --quiet-warnings` | - | 7 | quick screen, eval max-val-batches=2 | - | 0.0009 | 175.0522 | 0.3150 | ~2-4 min | `results/metrics/baseline_metrics_cpu_mid_segresnet_quick.json` |
 | run-017 | Generate label-preserving synthetic cases | `python -m scripts.generate_label_preserving_synthetic --source-dir data/processed/BraTS2023 --out-dir data/processed/BraTS2023_SYN --num-synthetic 16 --base-case-limit 32 --seed 42` | - | - | paired flips + intensity transforms, synthetic=16 | - | - | - | - | <1 min | `data/processed/BraTS2023_SYN/*` |
 | run-018 | Baseline + synthetic augmentation training/eval (CPU medium) | `python -m scripts.train_segmentation --data-dir data/processed/BraTS2023 --train-extra-dir data/processed/BraTS2023_SYN --device cpu --epochs 2 --num-workers 0 --case-limit 32 --spatial-size 96 --num-samples 1 --max-train-batches 20 --max-val-batches 6 --seed 42 --split-seed -1 --out checkpoints/best_model_cpu_mid_plus_synth.pt --quiet-warnings` then `python -m scripts.evaluate --data-dir data/processed/BraTS2023 --checkpoint checkpoints/best_model_cpu_mid_plus_synth.pt --device cpu --out results/metrics/baseline_metrics_cpu_mid_plus_synth.json --num-workers 0 --case-limit 32 --max-val-batches 6 --spatial-size 96 --seed 42 --split-seed -1 --val-ratio 0.2 --quiet-warnings` | 41 | 7 | +16 synthetic train-only cases from `BraTS2023_SYN` | 2 | 0.0335 | 121.3415 | 0.4941 | ~4-6 min | `checkpoints/best_model_cpu_mid_plus_synth.pt`, `results/metrics/baseline_metrics_cpu_mid_plus_synth.json` |
+| run-019 | Multi-seed quick A/B (baseline vs +synthetic) | loop over `seed=42,43,44` with `python -m scripts.train_segmentation` (epochs=1, case-limit=32, max-train-batches=10, max-val-batches=3) and paired `python -m scripts.evaluate` for baseline and `--train-extra-dir data/processed/BraTS2023_SYN` | 25/41 | 7 | quick-screen configuration for variance check | 1 | 0.0116 (baseline mean) | 142.2647 (baseline mean) | 0.1074 (baseline mean) | ~20-30 min | `results/metrics/seed_*_baseline_quick.json`, `results/metrics/seed_*_plus_synth_quick.json`, `results/tables/seed_ablation_quick_summary.csv` |
 
 ## Run Notes
 
@@ -144,3 +145,9 @@ Use this file as the primary source of truth for all executed runs.
 - Result summary: experiment completed; compared with baseline medium, Dice decreased (0.0335 vs 0.0525) and HD95 worsened.
 - Failure modes: none blocking after adding `--train-extra-dir` support.
 - Fixes applied: implemented train-only extra directory loading in `scripts/dataset.py` and `scripts/train_segmentation.py`.
+
+### run-019
+- Intended change: reduce single-seed bias by running a quick 3-seed A/B stress check under bounded settings.
+- Result summary: near-parity aggregate outcome (`mean delta_dice=-0.000115`, `mean delta_hd95=-0.361`, `mean delta_ece=+0.0019`), indicating no robust improvement from current synthetic settings.
+- Failure modes: none blocking.
+- Fixes applied: exported a machine-readable summary table at `results/tables/seed_ablation_quick_summary.csv`.
