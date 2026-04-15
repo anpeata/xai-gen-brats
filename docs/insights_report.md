@@ -2,6 +2,7 @@
 
 ## Experimental Setup
 
+- Current project phase: Phase 4 (Comparative validation and optimization).
 - Data split: Deterministic case-level split (`val_ratio=0.2`) on `data/processed/BraTS2023` using sorted case order (`split_seed=null` / no shuffle).
 - Preprocessing: Load four modalities, channel-first, intensity normalization (`nonzero=True`, `channel_wise=True`), training random crop (`96^3`, smoke run with `num_samples=1`).
 - Model: MONAI 3D UNet (`in_channels=4`, `out_channels=4`) trained for CPU smoke validation.

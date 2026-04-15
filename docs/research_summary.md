@@ -23,6 +23,7 @@ This project addresses a practical clinical-AI gap: achieving strong segmentatio
 - ECE (probability calibration)
 
 ## Current Status
+- Current phase: Phase 4 (Comparative validation and optimization).
 - Repository and pipeline scaffolding are complete.
 - Final claims should be updated only after full experiments are executed and logged.
 - Use the templates in `docs/experiment_log_template.md` and `docs/insights_report_template.md` for evidence-backed reporting.
@@ -43,6 +44,38 @@ This project addresses a practical clinical-AI gap: achieving strong segmentatio
 2. Quantify performance gain from synthetic augmentation.
 3. Add cross-institution validation split to test generalization.
 4. Expand uncertainty analysis to class-wise calibration curves.
+
+## Future GPU Scale-Up (Estimates)
+
+These estimates are practical planning ranges for this codebase and preprocessing choices.
+
+- CPU baseline used here:
+   - Segmentation medium run (2 epochs, bounded batches): about 2.5-3.5 minutes total.
+   - VAE run (2 epochs over full case list): about 22-24 minutes total.
+- Single modern GPU (for example RTX 4090 / A5000 / A100) expected speed-up:
+   - Segmentation training throughput: typically ~6x to ~20x faster than CPU-only runs.
+   - VAE training throughput: typically ~8x to ~25x faster than CPU-only runs.
+- Expected runtime examples with same settings:
+   - Segmentation medium run: roughly 20-40 seconds.
+   - VAE 2-epoch run: roughly 1-3 minutes.
+- What this enables for better insights:
+   - Longer segmentation runs (20-100 epochs) and stronger convergence trends.
+   - Multi-seed experiments for variance/confidence intervals.
+   - More cases for XAI/uncertainty and richer failure-pattern analysis.
+   - Hyperparameter sweeps (crop size, model choice, loss variants).
+
+## Suggested 3-Week Timeline
+
+- Week 1: Data pipeline + baseline segmentation.
+- Week 2: Explainability and uncertainty analysis.
+- Week 3: Generative extension + final reporting.
+
+## Future Work
+
+- Replace VAE with diffusion-based synthesis for higher realism.
+- Add cross-site external validation.
+- Incorporate calibration plots and decision-threshold analysis.
+- Extend to transformer segmentation backbones.
 
 ## Personal Learning Outcome
 This project strengthened end-to-end research engineering skills in biomedical AI: data handling, model development, explainability, uncertainty estimation, and scientific reporting.
