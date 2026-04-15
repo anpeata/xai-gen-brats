@@ -44,13 +44,14 @@
 - Larger synthetic pool check: increasing tuned synthetic cases to 64 under the same 3-seed medium setup produced mean `delta_dice=-0.001782`, mean `delta_hd95=+6.082`, and mean `delta_ece=-0.013772`, indicating calibration improved slightly but segmentation quality regressed.
 - Multi-seed quick check: a 3-seed quick A/B (`seed=42,43,44`) showed near-parity overall (`mean delta_dice=-0.000115`, `mean delta_hd95=-0.361`, `mean delta_ece=+0.0019`), indicating no reliable gain at current synthetic recipe strength.
 - Unified trade-off view: consolidated ranking across baseline, untuned-16, tuned-16, and tuned-64 (`results/tables/variant_comparison_medium_multiseed.csv`) places tuned-16 first for balanced segmentation-quality/calibration trade-offs in this bounded setup.
+- Dose sweep result: tuned-dose medium multiseed sweep (`dose=8,16,24,32`, `seed=42,43,44`) selected dose 8 as best in `results/tables/dose_sweep_medium_summary.csv`, with mean `delta_dice=+0.001589`, `delta_hd95=-1.927`, and near-flat calibration (`delta_ece=+0.000315`).
 
 ## Conclusions
 
 - Best current setting: CPU long v1 baseline (`epochs=5`, `case-limit=64`) currently provides the strongest segmentation metrics in this repository.
 - Main failure modes: dependency/import gaps, class-index mismatch in early metric code, and full-volume shape mismatch before divisible padding.
 - Next three experiments: (1) run longer CPU baselines (10+ epochs) with fixed random seeds; (2) run multi-seed XAI/uncertainty analysis over larger case subsets; (3) quantify synthetic augmentation impact against a no-augmentation control.
-- Immediate implementation recommendation: keep tuned synthetic generation settings, but add a controlled synthetic-dose sweep with train-only caps (for example 8, 16, 24, 32) rather than scaling directly to 64.
+- Immediate implementation recommendation: use tuned synthetic dose 8 as the default augmentation setting for the next longer-run validation campaign.
 
 ## GPU Scale-Up Notes
 
