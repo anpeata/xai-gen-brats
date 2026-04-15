@@ -8,3 +8,4 @@ baseline_plus_synthetic_label_preserving_cpu_medium,0.033469,121.341454,0.494102
 baseline_vs_synth_label_preserving_cpu_medium_multiseed_mean,0.030369,127.900798,0.369254,,,,"synthetic mean; baseline mean dice=0.030369, hd95=125.150317, ece=0.375063; see seed_ablation_medium_summary.csv"
 baseline_plus_synthetic_tuned_label_preserving_cpu_medium,0.035803,109.724609,0.506046,0.014884,0.076693,0.015829,"train_extra_dir=data/processed/BraTS2023_SYN_tuned,num_synthetic=16, tuned transforms"
 baseline_vs_synth_tuned_label_preserving_cpu_medium_multiseed_mean,0.030252,122.707934,0.374630,,,,"tuned synthetic mean; baseline mean dice=0.030369, hd95=125.150317, ece=0.375063; see seed_ablation_medium_tuned_summary.csv"
+baseline_vs_synth_tuned64_label_preserving_cpu_medium_multiseed_mean,0.028588,131.232224,0.361291,,,,"tuned64 synthetic mean; baseline mean dice=0.030369, hd95=125.150317, ece=0.375063; see seed_ablation_medium_tuned64_summary.csv"
