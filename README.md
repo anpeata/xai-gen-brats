@@ -205,6 +205,7 @@ Add final values from generated files under `results/metrics/`.
 3. Uncertainty maps for the same three cases show elevated variance near tumor boundaries, consistent with expected boundary ambiguity.
 4. Tuned label-preserving synthetic augmentation (41 train cases total with 16 synthetic additions) under the bounded medium setup improved HD95 versus the untuned recipe and reached Dice 0.0358, but still did not surpass the baseline medium Dice (0.0525); the generated data are better but not yet beneficial overall.
 5. Stronger 3-seed medium A/B (`seed=42,43,44`, 2 epochs, 20 train batches, 6 val batches) showed the tuned synthetic recipe with near-neutral Dice (`delta_dice=-0.000117`) and better HD95 (`delta_hd95=-2.442`) in `results/tables/seed_ablation_medium_tuned_summary.csv`, but scaling to a larger tuned pool (64 synthetic cases) degraded Dice (`delta_dice=-0.001782`) and HD95 (`delta_hd95=+6.082`) in `results/tables/seed_ablation_medium_tuned64_summary.csv`.
+6. A unified multiseed trade-off table across baseline, untuned-16, tuned-16, and tuned-64 (`results/tables/variant_comparison_medium_multiseed.csv`) ranks tuned-16 as the best balanced variant under current CPU-bounded settings.
 
 Current qualitative artifact paths (smoke-v2):
 

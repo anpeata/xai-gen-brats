@@ -36,3 +36,4 @@ Current machine-readable artifacts:
 - `results/tables/seed_ablation_medium_summary.csv`
 - `results/tables/seed_ablation_medium_tuned_summary.csv`
 - `results/tables/seed_ablation_medium_tuned64_summary.csv`
+- `results/tables/variant_comparison_medium_multiseed.csv`
