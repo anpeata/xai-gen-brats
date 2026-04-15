@@ -189,7 +189,7 @@ Add final values from generated files under `results/metrics/`.
 | SegResNet (CPU medium quick-eval) | 0.0009 | 0.0000 | 0.0000 | 0.0028 | 175.0522 | 0.3150 | checkpoint from bounded run, eval max-val-batches=2; quick screening only |
 | Baseline UNet (CPU long v1) | 0.1240 | 0.0032 | 0.3188 | 0.0498 | 91.6189 | 0.3570 | case-limit=64, epochs=5, max-train-batches=40, max-val-batches=10 |
 | Baseline + Uncertainty Analysis | 0.0891 | 0.0287 | 0.0155 | 0.0817 | 100.7852 | 0.0566 | uncertainty maps generated for 3 cases under `results/uncertainty/smoke_v2/` |
-| Baseline + Synthetic Augmentation (label-preserving) | 0.0335 | 0.0147 | 0.0707 | 0.0150 | 121.3415 | 0.4941 | train-extra-dir=`data/processed/BraTS2023_SYN`, 16 synthetic labeled cases, same medium bounded run config |
+| Baseline + Synthetic Augmentation (tuned label-preserving) | 0.0358 | 0.0149 | 0.0767 | 0.0158 | 109.7246 | 0.5060 | train-extra-dir=`data/processed/BraTS2023_SYN_tuned`, 16 synthetic labeled cases, tuned transform strength |
 
 ### Qualitative Evidence Checklist
 
@@ -203,8 +203,8 @@ Add final values from generated files under `results/metrics/`.
 1. Across current CPU runs, TC has the highest Dice and ET the lowest (for long v1: ET=0.0032, TC=0.3188, WT=0.0498), indicating core-region learning is stronger than enhancing-tumor delineation under bounded training.
 2. Grad-CAM overlays were successfully generated for three representative cases and are qualitatively centered around lesion regions in those examples.
 3. Uncertainty maps for the same three cases show elevated variance near tumor boundaries, consistent with expected boundary ambiguity.
-4. Label-preserving synthetic augmentation (41 train cases total with 16 synthetic additions) under the bounded medium setup reduced Dice versus baseline medium (0.0335 vs 0.0525), suggesting the current synthetic generation recipe needs refinement.
-5. Stronger 3-seed medium A/B (`seed=42,43,44`, 2 epochs, 20 train batches, 6 val batches) showed a mean Dice decrease (`delta_dice=-0.001367`) and HD95 worsening (`delta_hd95=+2.750`) for synthetic augmentation, while mean ECE slightly improved (`delta_ece=-0.005809`); see `results/tables/seed_ablation_medium_summary.csv`.
+4. Tuned label-preserving synthetic augmentation (41 train cases total with 16 synthetic additions) under the bounded medium setup improved HD95 versus the untuned recipe and reached Dice 0.0358, but still did not surpass the baseline medium Dice (0.0525); the generated data are better but not yet beneficial overall.
+5. Stronger 3-seed medium A/B (`seed=42,43,44`, 2 epochs, 20 train batches, 6 val batches) showed the tuned synthetic recipe nearly matching baseline Dice on average (`delta_dice=-0.000117`) and improving HD95 (`delta_hd95=-2.442`) with essentially flat ECE (`delta_ece=-0.000433`); see `results/tables/seed_ablation_medium_tuned_summary.csv`.
 
 Current qualitative artifact paths (smoke-v2):
 

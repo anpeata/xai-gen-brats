@@ -18,6 +18,14 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--out-dir", type=str, default="data/processed/BraTS2023_SYN")
     p.add_argument("--num-synthetic", type=int, default=16)
     p.add_argument("--base-case-limit", type=int, default=32)
+    p.add_argument("--min-tumor-voxels", type=int, default=500)
+    p.add_argument("--flip-prob", type=float, default=0.35)
+    p.add_argument("--scale-min", type=float, default=0.95)
+    p.add_argument("--scale-max", type=float, default=1.05)
+    p.add_argument("--shift-min", type=float, default=-0.03)
+    p.add_argument("--shift-max", type=float, default=0.03)
+    p.add_argument("--gamma-min", type=float, default=0.95)
+    p.add_argument("--gamma-max", type=float, default=1.05)
     p.add_argument("--seed", type=int, default=42)
     return p.parse_args()
 
@@ -46,10 +54,10 @@ def apply_spatial(arr: np.ndarray, flips: tuple[bool, bool, bool]) -> np.ndarray
     return out.copy()
 
 
-def apply_intensity(arr: np.ndarray, rng: random.Random) -> np.ndarray:
-    scale = rng.uniform(0.9, 1.1)
-    shift = rng.uniform(-0.1, 0.1)
-    gamma = rng.uniform(0.85, 1.15)
+def apply_intensity(arr: np.ndarray, rng: random.Random, args: argparse.Namespace) -> np.ndarray:
+    scale = rng.uniform(args.scale_min, args.scale_max)
+    shift = rng.uniform(args.shift_min, args.shift_max)
+    gamma = rng.uniform(args.gamma_min, args.gamma_max)
     out = normalize(arr)
     out = np.clip(out * scale + shift, 0.0, 1.0)
     out = np.power(out, gamma, dtype=np.float32)
@@ -68,6 +76,18 @@ def main() -> None:
     if args.base_case_limit > 0:
         base_cases = base_cases[: args.base_case_limit]
 
+    filtered_cases: list[Path] = []
+    for case in base_cases:
+        stem = case.name
+        seg_path = case / f"{stem}_seg.nii.gz"
+        if not seg_path.exists():
+            continue
+        seg = nib.load(str(seg_path)).get_fdata()
+        if int((seg > 0).sum()) >= args.min_tumor_voxels:
+            filtered_cases.append(case)
+
+    base_cases = filtered_cases
+
     if not base_cases:
         raise RuntimeError("No base cases found for synthetic generation.")
 
@@ -80,7 +100,11 @@ def main() -> None:
         seg_img = nib.load(str(seg_path))
         seg = seg_img.get_fdata().astype(np.int16)
 
-        flips = (rng.random() < 0.5, rng.random() < 0.5, rng.random() < 0.5)
+        flips = (
+            rng.random() < args.flip_prob,
+            rng.random() < args.flip_prob,
+            rng.random() < args.flip_prob,
+        )
         seg_syn = apply_spatial(seg, flips)
 
         syn_id = f"{stem}_SYN{idx:03d}"
@@ -92,7 +116,7 @@ def main() -> None:
             img = nib.load(str(mod_path))
             arr = img.get_fdata().astype(np.float32)
             arr_syn = apply_spatial(arr, flips)
-            arr_syn = apply_intensity(arr_syn, rng)
+            arr_syn = apply_intensity(arr_syn, rng, args)
 
             out_img = nib.Nifti1Image(arr_syn, affine=img.affine, header=img.header)
             nib.save(out_img, str(syn_case_dir / f"{syn_id}_{mod}.nii.gz"))
