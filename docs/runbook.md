@@ -91,6 +91,24 @@ Evaluate augmented checkpoint:
 2. Copy `docs/insights_report_template.md` to `docs/insights_report.md` and add findings.
 3. Update `README.md` Results section with final numbers and links to figures.
 
+## Step 6b: Phase 5 long multiseed campaign (recommended next)
+
+Quick pilot (1 seed, bounded runtime) to validate the full loop:
+- `python -m scripts.run_phase5_long_dose8_campaign --seeds 42 --epochs 3 --max-train-batches 20 --max-val-batches 6 --tag phase5_pilot_seed42 --skip-existing --quiet-warnings`
+
+Full long campaign (3 seeds, tuned synthetic dose 8):
+- `python -m scripts.run_phase5_long_dose8_campaign --seeds 42,43,44 --epochs 10 --max-train-batches 40 --max-val-batches 10 --dose 8 --tag phase5_long_dose8 --skip-existing --quiet-warnings`
+
+If the tuned synthetic pool is missing, auto-generate it inline:
+- `python -m scripts.run_phase5_long_dose8_campaign --seeds 42,43,44 --epochs 10 --max-train-batches 40 --max-val-batches 10 --dose 8 --tag phase5_long_dose8 --auto-generate-synthetic --skip-existing --quiet-warnings`
+
+Expected key outputs:
+- `results/tables/seed_ablation_phase5_long_dose8_summary.csv`
+- `results/metrics/seed_42_baseline_phase5_long_dose8.json`
+- `results/metrics/seed_42_plus_synth_dose8_phase5_long_dose8.json`
+- `checkpoints/best_model_cpu_phase5_long_dose8_seed42_baseline.pt`
+- `checkpoints/best_model_cpu_phase5_long_dose8_seed42_plus_synth_dose8.pt`
+
 ## Step 7: Final quality check
 
 - Verify every metric cited in README has a corresponding file in `results/`.
