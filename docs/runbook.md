@@ -7,6 +7,7 @@ This runbook helps generate real evidence quickly and consistently.
 1. Create and activate a virtual environment.
 2. Install dependencies from `requirements.txt`.
 3. Confirm GPU and package versions.
+4. On Windows, run the commands from the same interpreter you installed into, or invoke the explicit venv Python path directly, so campaign subprocesses do not fall back to a different system/conda interpreter.
 
 ## Step 2: Prepare data
 
@@ -92,6 +93,8 @@ Evaluate augmented checkpoint:
 3. Update `README.md` Results section with final numbers and links to figures.
 
 ## Step 6b: Phase 5 long multiseed campaign (recommended next)
+
+Before launching these commands, make sure the active Python interpreter can import `monai` and the rest of `requirements.txt`.
 
 Quick pilot (1 seed, bounded runtime) to validate the full loop:
 - `python -m scripts.run_phase5_long_dose8_campaign --seeds 42 --epochs 3 --max-train-batches 20 --max-val-batches 6 --tag phase5_pilot_seed42 --skip-existing --quiet-warnings`
