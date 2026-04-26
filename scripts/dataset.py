@@ -4,6 +4,8 @@ import random
 from pathlib import Path
 from typing import Iterable
 
+import nibabel as nib
+import numpy as np
 from monai.data import CacheDataset, DataLoader, Dataset
 from monai.transforms import (
     AsDiscrete,
@@ -39,6 +41,15 @@ def _find_cases(data_dir: Path) -> list[dict[str, str]]:
             continue
         cases.append({"image": image_paths, "label": str(seg_path)})
     return cases
+
+
+def _can_read_nifti_payload(path: str) -> bool:
+    try:
+        img = nib.load(path)
+        _ = np.asanyarray(img.dataobj)
+        return True
+    except Exception:
+        return False
 
 
 def split_cases(items: list[dict[str, str]], val_ratio: float = 0.2, split_seed: int | None = None):
@@ -109,6 +120,20 @@ def get_dataloaders(
 ):
     root = Path(data_dir)
     cases = _find_cases(root)
+
+    valid_cases: list[dict[str, str]] = []
+    skipped_cases = 0
+    for case in cases:
+        payload_paths = case["image"] + [case["label"]]
+        if all(_can_read_nifti_payload(path) for path in payload_paths):
+            valid_cases.append(case)
+        else:
+            skipped_cases += 1
+
+    if skipped_cases:
+        print(f"Skipped {skipped_cases} unreadable case(s) under {root}")
+
+    cases = valid_cases
 
     if case_limit > 0:
         cases = cases[:case_limit]
