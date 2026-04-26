@@ -2,7 +2,7 @@
 
 ## Experimental Setup
 
-- Current project phase: Phase 4 (Comparative validation and optimization).
+- Current project phase: Phase 5 pilot validation (long dose-8 A/B).
 - Data split: Deterministic case-level split (`val_ratio=0.2`) on `data/processed/BraTS2023` using sorted case order (`split_seed=null` / no shuffle).
 - Preprocessing: Load four modalities, channel-first, intensity normalization (`nonzero=True`, `channel_wise=True`), training random crop (`96^3`, smoke run with `num_samples=1`).
 - Model: MONAI 3D UNet (`in_channels=4`, `out_channels=4`) trained for CPU smoke validation.
@@ -51,8 +51,8 @@
 
 - Best current setting: CPU long v1 baseline (`epochs=5`, `case-limit=64`) currently provides the strongest segmentation metrics in this repository.
 - Main failure modes: dependency/import gaps, class-index mismatch in early metric code, and full-volume shape mismatch before divisible padding.
-- Next three experiments: (1) run longer CPU baselines (10+ epochs) with fixed random seeds; (2) run multi-seed XAI/uncertainty analysis over larger case subsets; (3) quantify synthetic augmentation impact against a no-augmentation control.
-- Immediate implementation recommendation: use tuned synthetic dose 8 as the default augmentation setting for the next longer-run validation campaign.
+- Next three experiments: (1) complete the full 3-seed Phase 5 long A/B at tuned synthetic dose 8; (2) run longer CPU baselines (10+ epochs) with fixed random seeds; (3) run multi-seed XAI/uncertainty analysis over larger case subsets.
+- Immediate implementation recommendation: keep tuned synthetic dose 8 as the active candidate augmentation setting, but do not promote it as final until the full 3-seed long campaign confirms the trend.
 
 ## GPU Scale-Up Notes
 

@@ -23,7 +23,7 @@ This project addresses a practical clinical-AI gap: achieving strong segmentatio
 - ECE (probability calibration)
 
 ## Current Status
-- Current phase: Phase 4 (Comparative validation and optimization).
+- Current phase: Phase 5 pilot validation (long dose-8 A/B).
 - Repository and pipeline scaffolding are complete.
 - Final claims should be updated only after full experiments are executed and logged.
 - Use the templates in `docs/experiment_log_template.md` and `docs/insights_report_template.md` for evidence-backed reporting.
@@ -40,8 +40,8 @@ This project addresses a practical clinical-AI gap: achieving strong segmentatio
 - Includes generative modeling extension for scarce/imbalanced tumor subtypes.
 
 ## Next Experiments
-1. Compare U-Net vs transformer-based lightweight encoder.
-2. Quantify performance gain from synthetic augmentation.
+1. Complete the full 3-seed Phase 5 long A/B at tuned synthetic dose 8 and compare it against the no-augmentation control.
+2. Compare U-Net vs transformer-based lightweight encoder.
 3. Add cross-institution validation split to test generalization.
 4. Expand uncertainty analysis to class-wise calibration curves.
 

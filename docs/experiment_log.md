@@ -193,3 +193,4 @@ Use this file as the primary source of truth for all executed runs.
 - Result summary: campaign runner completed baseline and synthetic A/B plus aggregation in one flow; synthetic dose 8 improved Dice slightly but worsened HD95 and ECE on this single-seed pilot (`delta_dice=+0.001751`, `delta_hd95=+3.103`, `delta_ece=+0.005041`).
 - Failure modes: initial execution timed out before synth steps completed; re-run with `--skip-existing` resumed and finished cleanly.
 - Fixes applied: added orchestration script `scripts/run_phase5_long_dose8_campaign.py` and exported pilot summary `results/tables/seed_ablation_phase5_pilot_seed42_summary.csv`.
+- Next action: run the remaining Phase 5 long seeds (`43` and `44`) under the same tuned dose 8 configuration, then compare the 3-seed aggregate against the no-augmentation control before changing any augmentation default.
