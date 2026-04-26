@@ -36,7 +36,11 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--tables-dir", type=str, default="results/tables")
     p.add_argument("--tag", type=str, default="phase5_long_dose8")
 
-    p.add_argument("--auto-generate-synthetic", action="store_true")
+    p.add_argument(
+        "--auto-generate-synthetic",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+    )
     p.add_argument("--synthetic-pool-size", type=int, default=64)
     p.add_argument("--synthetic-base-case-limit", type=int, default=32)
     p.add_argument("--synthetic-seed", type=int, default=142)
@@ -93,8 +97,8 @@ def maybe_generate_synthetic_pool(args: argparse.Namespace) -> None:
 
     if not args.auto_generate_synthetic:
         raise FileNotFoundError(
-            "Synthetic directory is missing or empty. "
-            "Provide --synthetic-dir with generated cases or use --auto-generate-synthetic."
+            "Synthetic directory is missing or empty, and auto-generation is disabled. "
+            "Provide a populated --synthetic-dir or omit --no-auto-generate-synthetic."
         )
 
     gen_cmd = [
