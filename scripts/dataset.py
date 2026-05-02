@@ -123,20 +123,28 @@ def get_dataloaders(
 
     valid_cases: list[dict[str, str]] = []
     skipped_cases = 0
-    for case in cases:
-        payload_paths = case["image"] + [case["label"]]
-        if all(_can_read_nifti_payload(path) for path in payload_paths):
-            valid_cases.append(case)
-        else:
-            skipped_cases += 1
+    if case_limit > 0:
+        for case in cases:
+            payload_paths = case["image"] + [case["label"]]
+            if all(_can_read_nifti_payload(path) for path in payload_paths):
+                valid_cases.append(case)
+                if len(valid_cases) >= case_limit:
+                    break
+            else:
+                skipped_cases += 1
+    else:
+        for case in cases:
+            payload_paths = case["image"] + [case["label"]]
+            if all(_can_read_nifti_payload(path) for path in payload_paths):
+                valid_cases.append(case)
+            else:
+                skipped_cases += 1
 
     if skipped_cases:
-        print(f"Skipped {skipped_cases} unreadable case(s) under {root}")
+        note = "" if case_limit == 0 else f" (while collecting up to {case_limit} case(s))"
+        print(f"Skipped {skipped_cases} unreadable case(s) under {root}{note}")
 
     cases = valid_cases
-
-    if case_limit > 0:
-        cases = cases[:case_limit]
 
     if len(cases) < 2:
         raise ValueError("Expected at least 2 cases. Verify BraTS files are under data_dir.")
