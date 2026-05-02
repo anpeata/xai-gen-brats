@@ -59,6 +59,12 @@ def parse_args():
     p.add_argument("--quick-cpu", action="store_true")
     p.add_argument("--quiet-warnings", action="store_true")
     p.add_argument("--out", type=str, default="checkpoints/best_model.pt")
+    p.add_argument(
+        "--out-latest",
+        type=str,
+        default="",
+        help="Optional path to always save the latest epoch checkpoint (separate from --out best checkpoint).",
+    )
     return p.parse_args()
 
 
@@ -121,6 +127,10 @@ def main():
     out_path = Path(args.out)
     out_path.parent.mkdir(parents=True, exist_ok=True)
 
+    latest_path = Path(args.out_latest) if args.out_latest else None
+    if latest_path is not None:
+        latest_path.parent.mkdir(parents=True, exist_ok=True)
+
     best_dice = -1.0
     for epoch in range(1, args.epochs + 1):
         model.train()
@@ -180,16 +190,16 @@ def main():
             )
             print(f"Saved new best checkpoint to {out_path} (val_dice={best_dice:.4f})")
 
-        # Always save the latest epoch checkpoint to guarantee a usable artifact.
-        torch.save(
-            {
-                "model_state_dict": model.state_dict(),
-                "epoch": epoch,
-                "val_dice": val_dice,
-                "model_name": args.model,
-            },
-            out_path,
-        )
+        if latest_path is not None:
+            torch.save(
+                {
+                    "model_state_dict": model.state_dict(),
+                    "epoch": epoch,
+                    "val_dice": val_dice,
+                    "model_name": args.model,
+                },
+                latest_path,
+            )
 
     print(f"Training complete. Best validation Dice={best_dice:.4f}")
 
