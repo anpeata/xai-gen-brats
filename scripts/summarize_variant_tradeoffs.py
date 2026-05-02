@@ -17,8 +17,17 @@ def _find_mean_row(rows: list[dict[str, str]]) -> dict[str, str]:
     raise ValueError("Could not find mean row")
 
 
-def _to_float(row: dict[str, str], key: str) -> float:
-    return float(row[key])
+def _to_float_any(row: dict[str, str], *keys: str) -> float:
+    for key in keys:
+        raw = row.get(key, "")
+        if raw is None:
+            continue
+        raw = raw.strip()
+        if raw != "":
+            return float(raw)
+    available = ", ".join(sorted(row.keys()))
+    wanted = ", ".join(keys)
+    raise KeyError(f"Missing numeric column (tried: {wanted}). Available: {available}")
 
 
 def parse_args() -> argparse.Namespace:
@@ -46,9 +55,9 @@ def main() -> None:
     tuned_mean = _find_mean_row(tuned_rows)
     tuned64_mean = _find_mean_row(tuned64_rows)
 
-    baseline_dice = _to_float(untuned_mean, "baseline_dice")
-    baseline_hd95 = _to_float(untuned_mean, "baseline_hd95")
-    baseline_ece = _to_float(untuned_mean, "baseline_ece")
+    baseline_dice = _to_float_any(untuned_mean, "baseline_dice")
+    baseline_hd95 = _to_float_any(untuned_mean, "baseline_hd95")
+    baseline_ece = _to_float_any(untuned_mean, "baseline_ece")
 
     variants = [
         {
@@ -62,30 +71,30 @@ def main() -> None:
         },
         {
             "variant": "untuned_synth_16",
-            "mean_dice": _to_float(untuned_mean, "synth_dice"),
-            "delta_dice": _to_float(untuned_mean, "delta_dice"),
-            "mean_hd95": _to_float(untuned_mean, "synth_hd95"),
-            "delta_hd95": _to_float(untuned_mean, "delta_hd95"),
-            "mean_ece": _to_float(untuned_mean, "synth_ece"),
-            "delta_ece": _to_float(untuned_mean, "delta_ece"),
+            "mean_dice": _to_float_any(untuned_mean, "synth_dice", "variant_dice"),
+            "delta_dice": _to_float_any(untuned_mean, "delta_dice"),
+            "mean_hd95": _to_float_any(untuned_mean, "synth_hd95", "variant_hd95"),
+            "delta_hd95": _to_float_any(untuned_mean, "delta_hd95"),
+            "mean_ece": _to_float_any(untuned_mean, "synth_ece", "variant_ece"),
+            "delta_ece": _to_float_any(untuned_mean, "delta_ece"),
         },
         {
             "variant": "tuned_synth_16",
-            "mean_dice": _to_float(tuned_mean, "tuned_synth_dice"),
-            "delta_dice": _to_float(tuned_mean, "delta_tuned"),
-            "mean_hd95": _to_float(tuned_mean, "tuned_synth_hd95"),
-            "delta_hd95": _to_float(tuned_mean, "delta_hd95_tuned"),
-            "mean_ece": _to_float(tuned_mean, "tuned_synth_ece"),
-            "delta_ece": _to_float(tuned_mean, "delta_ece_tuned"),
+            "mean_dice": _to_float_any(tuned_mean, "tuned_synth_dice", "variant_dice", "synth_dice"),
+            "delta_dice": _to_float_any(tuned_mean, "delta_tuned", "delta_dice"),
+            "mean_hd95": _to_float_any(tuned_mean, "tuned_synth_hd95", "variant_hd95", "synth_hd95"),
+            "delta_hd95": _to_float_any(tuned_mean, "delta_hd95_tuned", "delta_hd95"),
+            "mean_ece": _to_float_any(tuned_mean, "tuned_synth_ece", "variant_ece", "synth_ece"),
+            "delta_ece": _to_float_any(tuned_mean, "delta_ece_tuned", "delta_ece"),
         },
         {
             "variant": "tuned_synth_64",
-            "mean_dice": _to_float(tuned64_mean, "variant_dice"),
-            "delta_dice": _to_float(tuned64_mean, "delta_dice"),
-            "mean_hd95": _to_float(tuned64_mean, "variant_hd95"),
-            "delta_hd95": _to_float(tuned64_mean, "delta_hd95"),
-            "mean_ece": _to_float(tuned64_mean, "variant_ece"),
-            "delta_ece": _to_float(tuned64_mean, "delta_ece"),
+            "mean_dice": _to_float_any(tuned64_mean, "variant_dice", "tuned_synth_dice", "synth_dice"),
+            "delta_dice": _to_float_any(tuned64_mean, "delta_dice", "delta_tuned"),
+            "mean_hd95": _to_float_any(tuned64_mean, "variant_hd95", "tuned_synth_hd95", "synth_hd95"),
+            "delta_hd95": _to_float_any(tuned64_mean, "delta_hd95", "delta_hd95_tuned"),
+            "mean_ece": _to_float_any(tuned64_mean, "variant_ece", "tuned_synth_ece", "synth_ece"),
+            "delta_ece": _to_float_any(tuned64_mean, "delta_ece", "delta_ece_tuned"),
         },
     ]
 
