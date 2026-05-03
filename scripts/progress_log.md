@@ -12,3 +12,5 @@
 - Hardened `scripts.summarize_variant_tradeoffs` to accept either `synth_*` or `variant_*` CSV columns.
 - Sped up `scripts.dataset.get_dataloaders` when `case_limit>0` by stopping case validation early.
 - Smoke tests: `python -m compileall scripts`, `python -m scripts.train_segmentation --help`, `python -m scripts.summarize_variant_tradeoffs --help`.
+- Reran Phase 5 campaign: `python -m scripts.run_phase5_long_dose8_campaign --tag phase5_long_dose8_bestfix_20260502`.
+- Wrote summary CSV: `results/tables/seed_ablation_phase5_long_dose8_bestfix_20260502_summary.csv`.
