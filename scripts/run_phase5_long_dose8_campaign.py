@@ -46,6 +46,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--synthetic-seed", type=int, default=142)
     p.add_argument("--skip-existing", action="store_true")
     p.add_argument("--quiet-warnings", action="store_true")
+    p.add_argument("--no-progress", action="store_true")
     p.add_argument("--dry-run", action="store_true")
     return p.parse_args()
 
@@ -188,6 +189,8 @@ def build_train_cmd(
         )
     if args.quiet_warnings:
         cmd.append("--quiet-warnings")
+    if args.no_progress:
+        cmd.append("--no-progress")
     return cmd
 
 

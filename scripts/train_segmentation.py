@@ -56,6 +56,7 @@ def parse_args():
     p.add_argument("--num-samples", type=int, default=2)
     p.add_argument("--max-train-batches", type=int, default=0)
     p.add_argument("--max-val-batches", type=int, default=0)
+    p.add_argument("--no-progress", action="store_true")
     p.add_argument("--quick-cpu", action="store_true")
     p.add_argument("--quiet-warnings", action="store_true")
     p.add_argument("--out", type=str, default="checkpoints/best_model.pt")
@@ -136,7 +137,7 @@ def main():
         model.train()
         epoch_loss = 0.0
         n_train_batches = 0
-        progress = tqdm(train_loader, desc=f"Epoch {epoch}/{args.epochs}")
+        progress = tqdm(train_loader, desc=f"Epoch {epoch}/{args.epochs}", disable=args.no_progress)
         for batch_idx, batch in enumerate(progress, start=1):
             images = batch["image"].to(device)
             labels = batch["label"].to(device)
@@ -152,7 +153,8 @@ def main():
 
             epoch_loss += loss.item()
             n_train_batches += 1
-            progress.set_postfix({"loss": f"{loss.item():.4f}"})
+            if not args.no_progress:
+                progress.set_postfix({"loss": f"{loss.item():.4f}"})
 
             if args.max_train_batches > 0 and batch_idx >= args.max_train_batches:
                 break
