@@ -212,4 +212,3 @@ Use this file as the primary source of truth for all executed runs.
 - Date completed: 2026-05-10
 - Result summary: campaign completed for seeds 42, 43, and 44; aggregate baseline mean was `dice_mean=0.3044`, `hd95_mean=81.8231`, `ece=0.2427`, and the synthetic variant mean was `dice_mean=0.2709`, `hd95_mean=83.6158`, `ece=0.2589` (`delta_dice=-0.0334`, `delta_hd95=+1.7927`, `delta_ece=+0.0163`).
 - Outputs: checkpoints under `checkpoints/`, metrics JSONs under `results/metrics/`, and summary at `results/tables/seed_ablation_phase5_long_dose8_20260510_summary.csv`.
-- Status: completed.
